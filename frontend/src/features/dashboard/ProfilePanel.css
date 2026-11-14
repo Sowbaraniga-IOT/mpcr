@@ -1,0 +1,231 @@
+.profile {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  z-index: 20;
+  width: min(600px, calc(var(--app-w) - 32px));
+  background: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* Red header strip, like the login card */
+.profile__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 12px;
+  font-weight: 500;
+}
+.profile__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.profile__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---------- Avatar + name ---------- */
+.profile__identity {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 28px 24px;
+}
+.profile__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 88px;
+  height: 88px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 44px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.profile__who {
+  min-width: 0;
+}
+.profile__name {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+.profile__email {
+  margin: 4px 0 12px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.profile__role {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1.5px solid var(--ink);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* ---------- Details: a title-block grid ---------- */
+.profile__details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+.profile__details > div {
+  padding: 14px 20px 16px;
+  min-width: 0;
+}
+/* Inner rules only: 3 columns on desktop, 2 on phones */
+@media (min-width: 900px) {
+  .profile__details > div:not(:nth-child(3n + 1)) {
+    border-left: 1px solid var(--rule);
+  }
+  .profile__details > div:nth-child(n + 4) {
+    border-top: 1px solid var(--rule);
+  }
+}
+.profile__details dt {
+  margin-bottom: 8px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.profile__details dd {
+  margin: 0;
+  font: 500 15px var(--font-mono);
+  overflow-wrap: anywhere;
+}
+.profile__details dd.is-accent {
+  color: var(--accent);
+}
+
+/* ---------- Shift progress ---------- */
+.profile__shift {
+  padding: 20px 24px;
+}
+.profile__shift-label {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 10px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.profile__track {
+  height: 6px;
+  background: var(--rule);
+}
+.profile__track span {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+}
+
+/* ---------- Actions ---------- */
+.profile__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 24px 24px;
+  border-top: 1px solid var(--rule);
+}
+.profile__signout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  min-width: 200px;
+  border: 0;
+  padding: 14px 22px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.profile__signout:hover {
+  filter: brightness(0.92);
+}
+
+/* Phones: pin the panel to the screen edges instead of the button */
+@media (max-width: 899.98px) {
+  .profile {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-height: calc(var(--app-h) - 32px);
+    overflow-y: auto;
+  }
+  .profile__identity {
+    padding: 20px 16px;
+    gap: 16px;
+  }
+  .profile__avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+  }
+  .profile__name {
+    font-size: 22px;
+  }
+  .profile__details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .profile__details > div {
+    padding: 12px 16px;
+  }
+  .profile__details > div:nth-child(even) {
+    border-left: 1px solid var(--rule);
+  }
+  .profile__details > div:nth-child(n + 3) {
+    border-top: 1px solid var(--rule);
+  }
+  .profile__signout {
+    flex: 1;
+  }
+}
+
+/* Display size: Smaller / Auto / Larger, on top of the automatic fit to the window */
+.profile__size {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border-top: 1px solid var(--rule);
+  font-size: 11px;
+  color: var(--muted);
+}
+.profile__size-options {
+  display: flex;
+}
+.profile__size-options button {
+  padding: 6px 12px;
+  border: 1.5px solid var(--ink);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.profile__size-options button + button {
+  border-left: 0;
+}
+.profile__size-options button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--card);
+}

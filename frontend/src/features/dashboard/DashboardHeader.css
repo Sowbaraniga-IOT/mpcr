@@ -1,0 +1,285 @@
+.dash-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: stretch;
+  border-bottom: 2px solid var(--ink);
+}
+
+.dash-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-right: 1px solid var(--rule);
+}
+.dash-header__logo {
+  font-size: 44px;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+}
+.dash-header__title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+}
+.dash-header__title span {
+  color: var(--muted);
+}
+
+/* ---------- Parameter log: back button + breadcrumb ---------- */
+.dash-header.dash-header--log {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+.dash-header--log .dash-header__actions {
+  justify-content: flex-end;
+}
+.dash-header__back {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-right: 8px;
+  border: 1.5px solid var(--ink);
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+}
+.dash-header__back:hover {
+  background: var(--ink);
+  color: var(--card);
+}
+.dash-header__crumbs {
+  font-size: 10px;
+  color: var(--muted);
+}
+.dash-header__crumbs button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.dash-header__crumbs button:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.dash-header__title .dash-header__page {
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.dash-header__bell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 40px;
+  border: 1.5px solid var(--ink);
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+}
+.dash-header__bell:hover {
+  background: var(--ink);
+  color: var(--card);
+}
+.dash-header__badge {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  min-width: 18px;
+  padding: 2px 4px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* ---------- Status counters ---------- */
+.dash-header__counts {
+  display: flex;
+  margin: 0;
+}
+.dash-header__count {
+  flex: 0 1 144px;
+  padding: 14px 20px;
+  border-right: 1px solid var(--rule);
+}
+.dash-header__count dt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.dash-header__count dd {
+  margin: 6px 0 0;
+  font: 500 26px var(--font-mono);
+}
+
+/* ---------- Right-hand actions ---------- */
+.dash-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+}
+
+/* Toggle, Report and avatar share one 40px row height.
+   ThemeToggle's own align-self (for the login column) is reset here. */
+.dash-header__actions .theme-toggle {
+  align-self: center;
+  height: 40px;
+}
+.dash-header__actions .theme-toggle__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dash-header__report {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 18px;
+  border: 1.5px solid var(--ink);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.dash-header__report:hover {
+  background: var(--ink);
+  color: var(--card);
+}
+
+.user-menu {
+  position: relative;
+}
+.user-menu__btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid;
+  padding: 4px;
+  background: #e3241f;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.user-menu__avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.user-menu__text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.user-menu__name {
+  font-size: 12px;
+  font-weight: 700;
+}
+.user-menu__role {
+  font-size: 12px;
+  color: var(--muted);
+  color:aliceblue;
+}
+.user-menu__chevron {
+  margin-left: 12px;
+  transition: transform 0.15s;
+}
+.user-menu__btn[aria-expanded='true'] .user-menu__chevron {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 1280px) {
+  .dash-header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .dash-header__counts {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    border-top: 1px solid var(--rule);
+  }
+  .dash-header__count {
+    flex: 1;
+  }
+  .dash-header__actions {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 899.98px) {
+  .dash-header,
+  .dash-header.dash-header--log {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dash-header--log .dash-header__actions {
+    justify-content: flex-start;
+  }
+  .dash-header__brand {
+    border-right: 0;
+    padding: 12px 16px;
+  }
+  .dash-header__actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 0 16px 12px;
+  }
+  /* The tab bar under the header already has Report */
+  .dash-header__report {
+    display: none;
+  }
+  /* All five counters in one row, without sideways scrolling */
+  .dash-header__counts {
+    grid-row: auto;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .dash-header__count {
+    min-width: 0;
+    padding: 8px 6px;
+  }
+  .dash-header__count dt {
+    gap: 4px;
+    font-size: 9px;
+    white-space: nowrap;
+  }
+  .dash-header__count dd {
+    margin-top: 4px;
+    font-size: 20px;
+  }
+  .user-menu__text {
+    display: none;
+  }
+  /* Bell, theme toggle and profile button share one row on a 360px+ phone */
+  .user-menu__btn {
+    gap: 4px;
+  }
+  .user-menu__chevron {
+    margin-left: 0;
+  }
+}
+.dash-header__report[aria-current='page'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}

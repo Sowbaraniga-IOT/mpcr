@@ -1,0 +1,11 @@
+# Install into the backend's own virtual environment (see README):
+#   py -m venv .venv  →  .venv\Scripts\python -m pip install -r requirements.txt
+# Django 5.2 is the LTS line (security fixes until April 2028).
+Django>=5.2.18,<5.3
+djangorestframework>=3.18.3
+django-cors-headers>=4.9.0
+sqlparse>=0.6.1
+asgiref>=3.13.0
+# Only needed with DB_ENGINE=postgres
+psycopg2-binary>=2.9.13
+paho-mqtt>=2.0.0

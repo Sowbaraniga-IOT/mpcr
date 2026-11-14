@@ -1,0 +1,240 @@
+[
+ {
+  "pkg": "Django",
+  "ver": "5.0.3",
+  "cves": [
+   {
+    "id": "CVE-2024-39330",
+    "fixed": "5.0.7, 4.2.14",
+    "text": "An issue was discovered in Django 5.0 before 5.0.7 and 4.2 before 4.2.14. Derived classes "
+   },
+   {
+    "id": "CVE-2024-39329",
+    "fixed": "5.0.7, 4.2.14",
+    "text": "An issue was discovered in Django 5.0 before 5.0.7 and 4.2 before 4.2.14. The django.contr"
+   },
+   {
+    "id": "CVE-2024-38875",
+    "fixed": "4.2.14, 5.0.7",
+    "text": "An issue was discovered in Django 4.2 before 4.2.14 and 5.0 before 5.0.7. urlize and urliz"
+   },
+   {
+    "id": "CVE-2024-39614",
+    "fixed": "5.0.7, 4.2.14",
+    "text": "An issue was discovered in Django 5.0 before 5.0.7 and 4.2 before 4.2.14. get_supported_la"
+   },
+   {
+    "id": "CVE-2024-41991",
+    "fixed": "5.0.8, 4.2.15",
+    "text": "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. The urlize and u"
+   },
+   {
+    "id": "CVE-2024-42005",
+    "fixed": "5.0.8, 4.2.15",
+    "text": "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. QuerySet.values("
+   },
+   {
+    "id": "CVE-2024-41990",
+    "fixed": "5.0.8, 4.2.15",
+    "text": "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. The urlize() and"
+   },
+   {
+    "id": "CVE-2024-41989",
+    "fixed": "5.0.8, 4.2.15",
+    "text": "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. The floatformat "
+   },
+   {
+    "id": "CVE-2025-26699",
+    "fixed": "5.1.7, 5.0.13, 4.2.20",
+    "text": "An issue was discovered in Django 5.1 before 5.1.7, 5.0 before 5.0.13, and 4.2 before 4.2."
+   },
+   {
+    "id": "CVE-2024-45230",
+    "fixed": "5.1.1, 5.0.9, 4.2.16",
+    "text": "An issue was discovered in Django 5.1 before 5.1.1, 5.0 before 5.0.9, and 4.2 before 4.2.1"
+   },
+   {
+    "id": "CVE-2024-45231",
+    "fixed": "5.1.1, 5.0.9, 4.2.16",
+    "text": "An issue was discovered in Django v5.1.1, v5.0.9, and v4.2.16. The django.contrib.auth.for"
+   },
+   {
+    "id": "CVE-2025-27556",
+    "fixed": "5.0.14, 5.1.8",
+    "text": "An issue was discovered in Django 5.1 before 5.1.8 and 5.0 before 5.0.14. The NFKC normali"
+   },
+   {
+    "id": "CVE-2024-53907",
+    "fixed": "5.1.4, 4.2.17, 5.0.10, 5.1.4, 5.0.10, 4.2.17",
+    "text": "An issue was discovered in Django 5.1 before 5.1.4, 5.0 before 5.0.10, and 4.2 before 4.2."
+   },
+   {
+    "id": "CVE-2024-53908",
+    "fixed": "5.0.10, 5.1.4, 4.2.17, 5.1.4, 5.0.10, 4.2.17",
+    "text": "An issue was discovered in Django 5.1 before 5.1.4, 5.0 before 5.0.10, and 4.2 before 4.2."
+   },
+   {
+    "id": "CVE-2024-56374",
+    "fixed": "5.1.5, 5.0.11, 4.2.18",
+    "text": "An issue was discovered in Django 5.1 before 5.1.5, 5.0 before 5.0.11, and 4.2 before 4.2."
+   },
+   {
+    "id": "CVE-2025-48432",
+    "fixed": "5.2.2, 5.1.10, 4.2.22",
+    "text": "An issue was discovered in Django 5.2 before 5.2.2, 5.1 before 5.1.10, and 4.2 before 4.2."
+   },
+   {
+    "id": "CVE-2025-57833",
+    "fixed": "4.2.24, 5.1.12, 5.2.6",
+    "text": "An issue was discovered in Django 4.2 before 4.2.24, 5.1 before 5.1.12, and 5.2 before 5.2"
+   },
+   {
+    "id": "CVE-2025-64458",
+    "fixed": "5.2.8, 5.1.14, 4.2.26",
+    "text": "An issue was discovered in 5.1 before 5.1.14, 4.2 before 4.2.26, and 5.2 before 5.2.8. NFK"
+   },
+   {
+    "id": "CVE-2025-64459",
+    "fixed": "5.2.8, 5.1.14, 4.2.26",
+    "text": "An issue was discovered in 5.1 before 5.1.14, 4.2 before 4.2.26, and 5.2 before 5.2.8. The"
+   },
+   {
+    "id": "CVE-2026-15830",
+    "fixed": "5.2.17, 6.0.8, 6.1.1",
+    "text": "An issue was discovered in Django 5.2 before 5.2.17 and 6.0 before 6.0.8. GeoDjango's `dja"
+   },
+   {
+    "id": "CVE-2026-15307",
+    "fixed": "5.2.17, 6.0.8",
+    "text": "An issue was discovered in Django 5.2 before 5.2.17 and 6.0 before 6.0.8. GeoDjango spatia"
+   },
+   {
+    "id": "CVE-2026-48587",
+    "fixed": "5.2.15, 6.0.6",
+    "text": "An issue was discovered in Django 5.2 before 5.2.15 and 6.0 before 6.0.6. `django.utils.ca"
+   },
+   {
+    "id": "CVE-2026-6873",
+    "fixed": "5.2.15, 6.0.6",
+    "text": "An issue was discovered in Django 6.0 before 6.0.6 and 5.2 before 5.2.15. `django.http.Htt"
+   },
+   {
+    "id": "CVE-2026-8404",
+    "fixed": "5.2.15, 6.0.6",
+    "text": "An issue was discovered in Django 5.2 before 5.2.15 and 6.0 before 6.0.6. `django.middlewa"
+   },
+   {
+    "id": "CVE-2026-48588",
+    "fixed": "5.2.16, 6.0.7",
+    "text": "An issue was discovered in Django 6.0 before 6.0.7 and 5.2 before 5.2.16. `UpdateCacheMidd"
+   },
+   {
+    "id": "CVE-2026-53877",
+    "fixed": "5.2.16, 6.0.7",
+    "text": "An issue was discovered in Django 6.0 before 6.0.7 and 5.2 before 5.2.16. `django.contrib."
+   },
+   {
+    "id": "CVE-2026-53878",
+    "fixed": "5.2.16, 6.0.7",
+    "text": "An issue was discovered in Django 6.0 before 6.0.7 and 5.2 before 5.2.16. `DomainNameValid"
+   }
+  ]
+ },
+ {
+  "pkg": "djangorestframework",
+  "ver": "3.15.1",
+  "cves": [
+   {
+    "id": "CVE-2024-21520",
+    "fixed": "3.15.2",
+    "text": "Versions of the package djangorestframework before 3.15.2 are vulnerable to Cross-site Scr"
+   },
+   {
+    "id": "CVE-2026-73228",
+    "fixed": "3.17.2",
+    "text": "## Summary  While investigating Django REST Framework's request parsing behavior, I identi"
+   },
+   {
+    "id": "CVE-2026-73229",
+    "fixed": "3.17.2",
+    "text": "Summary  AdminRenderer may disclose data that would normally be protected by GET permissio"
+   },
+   {
+    "id": "CVE-2026-114138",
+    "fixed": "3.18.2",
+    "text": "### Summary  DRF's content negotiation parses each Accept token several times per request "
+   },
+   {
+    "id": "CVE-2026-114136",
+    "fixed": "3.18.2",
+    "text": "### Summary  An unauthenticated attacker can defeat Django's `DATA_UPLOAD_MAX_MEMORY_SIZE`"
+   },
+   {
+    "id": "CVE-2026-114137",
+    "fixed": "3.18.2",
+    "text": "### Summary  Deleting an authentication token through `TokenProxy` silently deletes nothin"
+   }
+  ]
+ },
+ {
+  "pkg": "django-cors-headers",
+  "ver": "4.3.1",
+  "cves": []
+ },
+ {
+  "pkg": "psycopg2-binary",
+  "ver": "2.9.9",
+  "cves": []
+ },
+ {
+  "pkg": "asgiref",
+  "ver": "3.8.1",
+  "cves": []
+ },
+ {
+  "pkg": "sqlparse",
+  "ver": "0.4.4",
+  "cves": [
+   {
+    "id": "CVE-2024-4340",
+    "fixed": "0.5.0",
+    "text": "### Summary Passing a heavily nested list to sqlparse.parse() leads to a Denial of Service"
+   },
+   {
+    "id": "GHSA-27jp-wm6q-gp25",
+    "fixed": "0.5.4",
+    "text": "### Summary The below gist hangs while attempting to format a long list of tuples.  This w"
+   },
+   {
+    "id": "CVE-2026-71491",
+    "fixed": "0.6.0",
+    "text": "### Summary A comment-only statement (`-- c\\n`*n) may cause a Denial of Service (DoS).  ##"
+   },
+   {
+    "id": "CVE-2026-59894",
+    "fixed": "0.6.0",
+    "text": "### Summary  The documented Python and PHP output modes generate source-code snippets from"
+   },
+   {
+    "id": "CVE-2026-59893",
+    "fixed": "0.6.0",
+    "text": "### Summary  sqlparse contains a Regular Expression Denial of Service (ReDoS) vulnerabilit"
+   },
+   {
+    "id": "CVE-2026-54284",
+    "fixed": "0.6.0",
+    "text": "### Summary  `sqlparse` ships hard limits (`MAX_GROUPING_DEPTH=100`, `MAX_GROUPING_TOKENS="
+   },
+   {
+    "id": "CVE-2026-84305",
+    "fixed": "0.6.0",
+    "text": "### Summary  When SQL is formatted with reindentation enabled, `ReindentFilter` repeatedly"
+   }
+  ]
+ },
+ {
+  "pkg": "tzdata",
+  "ver": "2024.1",
+  "cves": []
+ }
+]

@@ -1,0 +1,4 @@
+"""MPCR EUROMAP 77 Collector: FANUC ROBOSHOT OPC UA gateway → MQTT, for MPCR."""
+
+NAME = 'MPCR EUROMAP 77 Collector'
+VERSION = '1.0.0'

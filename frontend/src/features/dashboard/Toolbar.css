@@ -1,0 +1,153 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 20px;
+}
+
+/* ---------- Search: underline only, like the login fields ---------- */
+.toolbar__search {
+  flex: 0 1 320px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1.5px solid var(--ink);
+  color: var(--muted);
+}
+.toolbar__search:focus-within {
+  border-bottom-color: var(--accent);
+  color: var(--accent);
+}
+.toolbar__search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: 10px 0;
+  background: transparent;
+  color: var(--ink);
+  font: 400 17px var(--font-sans);
+  outline: none;
+}
+.toolbar__search input::placeholder {
+  color: var(--muted);
+}
+
+/* ---------- Segmented buttons (status filter + card/list) ---------- */
+.segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--ink);
+}
+.segmented__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  padding: 10px 16px;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.segmented__btn + .segmented__btn {
+  border-left: 1px solid var(--ink);
+}
+.segmented__btn:hover {
+  color: var(--accent);
+}
+.segmented__btn[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--card);
+}
+.segmented__btn--accent[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.toolbar__view {
+  margin-left: auto;
+}
+.toolbar__view .segmented__btn {
+  min-width: 112px;
+  justify-content: center;
+}
+
+/* ---------- Line / clamp selects ---------- */
+.filter-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--ink);
+  background: var(--card);
+  font-size: 12px;
+}
+.filter-select label {
+  padding-left: 14px;
+}
+.filter-select select {
+  appearance: none;
+  border: 0;
+  padding: 10px 44px 10px 8px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.filter-select select option {
+  background: var(--card);
+}
+/* Chevron */
+.filter-select::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border: solid var(--ink);
+  border-width: 0 1.5px 1.5px 0;
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+.filter-select:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+@media (max-width: 899.98px) {
+  .toolbar {
+    gap: 12px;
+  }
+  .toolbar__search {
+    flex-basis: 100%;
+  }
+  .toolbar__view {
+    margin-left: 0;
+  }
+  .segmented__btn {
+    padding: 9px 11px;
+  }
+}
+
+/* ---------- Sort: a select plus a ↓/↑ button that reverses it ---------- */
+.toolbar__sort {
+  display: inline-flex;
+}
+.toolbar__dir {
+  width: 40px;
+  border: 1px solid var(--ink);
+  border-left: 0;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 16px;
+  cursor: pointer;
+}
+.toolbar__dir:hover {
+  color: var(--accent);
+}
+.toolbar__dir[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--card);
+}

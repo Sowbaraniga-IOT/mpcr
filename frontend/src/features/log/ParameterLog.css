@@ -1,0 +1,730 @@
+.plog {
+  --changed: var(--idle);
+  --changed-soft: color-mix(in srgb, var(--idle) 18%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 28px 16px;
+  min-width: 0;
+}
+
+/* ---------- Info strip, shift tabs, actions ---------- */
+.plog__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 24px;
+}
+
+.plog__info {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  border: 2px solid var(--ink);
+  background: var(--card);
+}
+.plog__info > div {
+  padding: 10px 18px 12px;
+  border-right: 1px solid var(--rule);
+}
+.plog__info > div:last-child {
+  border-right: 0;
+}
+.plog__info dt {
+  font-size: 10px;
+  color: var(--muted);
+}
+.plog__info dd {
+  margin: 6px 0 0;
+  font-size: 18px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+.plog__info dd.is-accent {
+  color: var(--accent);
+}
+
+.plog__shift {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.plog__tabs {
+  display: flex;
+  border: 1.5px solid var(--ink);
+}
+.plog__tabs button {
+  min-width: 52px;
+  height: 34px;
+  border: 0;
+  border-right: 1px solid var(--rule);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.plog__tabs button:last-child {
+  border-right: 0;
+}
+.plog__tabs button:hover {
+  background: var(--accent-soft);
+}
+.plog__tabs button[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.plog__actions {
+  display: flex;
+  gap: 14px;
+  margin-left: auto;
+}
+.plog__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 24px;
+  border: 1.5px solid var(--ink);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.plog__btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--card);
+}
+.plog__btn--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.plog__btn--primary:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--on-accent);
+  filter: brightness(0.92);
+}
+.plog__btn:disabled {
+  border-color: var(--run);
+  background: transparent;
+  color: var(--run);
+  cursor: default;
+}
+
+/* ---------- Export menu ---------- */
+.plog-export {
+  position: relative;
+}
+.plog-export .plog__btn:disabled {
+  border-color: var(--ink);
+  color: var(--muted);
+  cursor: progress;
+}
+.plog-export__chevron {
+  transition: transform 0.15s;
+}
+.plog-export [aria-expanded='true'] .plog-export__chevron {
+  transform: rotate(180deg);
+}
+.plog-export__menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 10;
+  min-width: 100%;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border: 1.5px solid var(--ink);
+  background: var(--card);
+  box-shadow: 4px 4px 0 var(--rule);
+}
+.plog-export__menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.plog-export__menu button:hover {
+  background: var(--accent-soft);
+}
+.plog-export__tag {
+  min-width: 48px;
+  padding: 2px 6px;
+  color: #fff;
+  font-size: 10px;
+  text-align: center;
+}
+.plog-export__tag.is-excel {
+  background: #1d6f42;
+}
+.plog-export__tag.is-pdf {
+  background: var(--accent);
+}
+.plog-export__error {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  margin: 0;
+  padding: 6px 10px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ---------- Sheet + side panel ---------- */
+.plog__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+.plog-table {
+  border: 2px solid var(--ink);
+  background: var(--card);
+  min-width: 0;
+}
+.plog-table__bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 8px 8px 14px;
+  border-bottom: 2px solid var(--ink);
+  background: var(--well);
+}
+.plog-table__bar h2 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+}
+.plog-table__alert {
+  margin: 0;
+  padding: 4px 10px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 10px;
+}
+
+/* Scrolls both ways; header row and parameter column stay put */
+.plog-table__scroll {
+  overflow: auto;
+  max-height: max(420px, calc(var(--app-h) - 330px));
+}
+.plog-table table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+.plog-table th,
+.plog-table td {
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+  text-align: left;
+  white-space: nowrap;
+}
+.plog-table .num {
+  text-align: center;
+}
+
+.plog-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 8px 10px;
+  background: var(--card);
+  border-bottom: 1.5px solid var(--ink);
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: normal;
+  vertical-align: middle;
+}
+.plog-table thead th.num {
+  max-width: 76px;
+}
+.plog-table__param {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 190px;
+  background: var(--card);
+  font-weight: 400;
+}
+.plog-table thead .plog-table__param {
+  z-index: 3;
+}
+.plog-table tbody .plog-table__param {
+  border-right: 1px solid var(--rule);
+}
+
+.plog-table__std {
+  background: color-mix(in srgb, var(--ink) 5%, var(--card));
+}
+.plog-table thead .plog-table__std {
+  color: var(--ink);
+  font-weight: 700;
+  background: color-mix(in srgb, var(--ink) 5%, var(--card));
+}
+.plog-table__set {
+  font-weight: 700;
+}
+.plog-table__unit {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: none;
+}
+
+/* Hour columns */
+.plog-table thead .plog-table__hour {
+  min-width: 96px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink);
+}
+.plog-table__hour span {
+  display: block;
+  margin-top: 2px;
+  font-size: 9px;
+  color: var(--run);
+}
+.plog-table__hour.is-later {
+  color: var(--muted);
+}
+.plog-table__hour.is-later span {
+  color: var(--muted);
+}
+.plog-table thead .plog-table__hour.is-due {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.plog-table__hour.is-due span {
+  color: var(--on-accent);
+}
+.plog-table td.is-due {
+  background: var(--accent-soft);
+}
+.plog-table__slot {
+  display: block;
+  height: 16px;
+  border: 1.5px dashed var(--accent);
+}
+
+/* Section rows */
+.plog-table__section th {
+  padding: 4px 0;
+  background: var(--well);
+  border-right: 0;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.plog-table__section span {
+  position: sticky;
+  left: 0;
+  display: inline-block;
+  padding: 0 14px;
+  box-shadow: inset 4px 0 var(--accent);
+}
+
+/* Opaque, so readings scrolling under the sticky parameter column stay hidden */
+.plog-table tbody tr:not(.plog-table__section):hover > * {
+  background: color-mix(in srgb, var(--accent) 8%, var(--card));
+}
+.plog-table tr.is-na > * {
+  color: var(--muted);
+  font-weight: 400;
+}
+.plog-table tbody th.plog-table__param {
+  font-weight: 400;
+}
+
+/* Out-of-limit readings */
+.plog-table__flag {
+  width: 100%;
+  padding: 1px 6px;
+  border: 1.5px solid;
+  font: inherit;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.plog-table__flag.is-limit {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.plog-table__flag.is-changed {
+  border-color: var(--changed);
+  background: var(--changed-soft);
+  color: var(--changed);
+}
+
+/* ---------- Side panel ---------- */
+.plog__side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+.plog__side-title {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 8px 14px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.plog__next {
+  border: 2px solid var(--ink);
+  background: var(--card);
+}
+.plog__next-body {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 16px 16px;
+}
+.plog__next-time {
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+.plog__next-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.plog__next-meta .is-due {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.plog__next-meta .is-done {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--run);
+}
+.plog__next-track {
+  height: 4px;
+  background: var(--rule);
+}
+.plog__next-track span {
+  display: block;
+  height: 100%;
+  background: var(--run);
+}
+
+.dev-panel {
+  border: 2px solid var(--ink);
+  background: var(--card);
+}
+.dev-panel:focus {
+  outline: 2px solid var(--accent);
+}
+.dev-panel__flow {
+  margin: 0;
+  padding: 10px 14px 4px;
+  font-size: 9px;
+  color: var(--muted);
+}
+.dev-panel__none {
+  margin: 0;
+  padding: 24px 14px;
+  color: var(--muted);
+}
+.dev-panel__list {
+  max-height: max(360px, calc(var(--app-h) - 470px));
+  overflow-y: auto;
+  padding: 4px 14px 14px;
+}
+
+.dev-card {
+  --tone: var(--accent);
+  padding: 10px 0 14px 14px;
+  border-bottom: 1px solid var(--rule);
+  box-shadow: inset 3px 0 var(--tone);
+  transition: background-color 0.2s;
+}
+.dev-card:last-child {
+  border-bottom: 0;
+}
+.dev-card.is-awaiting,
+.dev-card.is-supervised {
+  --tone: var(--changed);
+}
+.dev-card.is-closed {
+  --tone: var(--run);
+}
+.dev-card.is-focused {
+  background: var(--accent-soft);
+}
+.dev-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+}
+.dev-card__badge {
+  flex: none;
+  padding: 3px 8px;
+  background: var(--tone);
+  color: var(--on-accent);
+  font-size: 9px;
+  font-weight: 700;
+}
+.dev-card__value {
+  margin: 6px 0 2px;
+  font-size: 24px;
+  font-weight: 500;
+}
+.dev-card__value small {
+  font-size: 13px;
+  text-transform: none;
+}
+.dev-card__value.is-limit,
+.dev-card__why.is-limit {
+  color: var(--accent);
+}
+.dev-card__value.is-changed,
+.dev-card__why.is-changed {
+  color: var(--changed);
+}
+.dev-card__why {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.dev-card__reason {
+  margin: 8px 0 4px;
+  font-size: 13px;
+}
+.dev-card__reason.is-empty {
+  color: var(--muted);
+}
+.dev-card__by {
+  margin: 0;
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: none;
+}
+.dev-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 6px;
+}
+.dev-card__state {
+  margin: 6px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+.dev-card__row .dev-card__state {
+  margin: 0;
+}
+.dev-card__state.is-rejected {
+  color: var(--accent);
+}
+.dev-card__state.is-awaiting {
+  color: var(--changed);
+}
+.dev-card__state.is-closed {
+  color: var(--run);
+}
+.dev-card__add {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.dev-card__add:hover {
+  filter: brightness(0.92);
+}
+.dev-card__edit {
+  flex: none;
+  padding: 6px 10px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.dev-card__edit:hover {
+  background: var(--ink);
+  color: var(--card);
+}
+
+/* ---------- Legend ---------- */
+.plog__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 48px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.plog__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.plog__swatch {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid;
+}
+.plog__swatch--limit {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.plog__swatch--changed {
+  border-color: var(--changed);
+  background: var(--changed-soft);
+}
+.plog__swatch--due {
+  border: 1.5px dashed var(--accent);
+}
+
+@media (max-width: 1280px) {
+  .plog__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .plog__side {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    align-items: start;
+  }
+}
+
+@media (max-width: 899.98px) {
+  .plog {
+    padding: 16px;
+  }
+  .plog__info > div {
+    flex: 1 1 40%;
+    border-bottom: 1px solid var(--rule);
+  }
+  .plog__actions {
+    margin-left: 0;
+    width: 100%;
+  }
+  .plog__btn,
+  .plog-export {
+    flex: 1;
+    justify-content: center;
+    padding: 0 12px;
+  }
+  .plog-export {
+    padding: 0;
+  }
+  .plog-export .plog__btn {
+    width: 100%;
+  }
+  .plog__side {
+    display: flex;
+  }
+  .plog-table__param {
+    min-width: 150px;
+    white-space: normal;
+  }
+}
+
+/* Admin review entry points on a deviation card */
+.dev-card__review {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  border: 0;
+  background: var(--changed);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.dev-card__review:hover {
+  filter: brightness(0.92);
+}
+.dev-card__details {
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 10px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.dev-card__details:hover {
+  color: var(--accent);
+}
+
+/* Edit after submit: a small button under a logged hour */
+.plog-table__edit {
+  display: block;
+  margin: 4px auto 0;
+  padding: 1px 6px;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.plog-table__edit:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* A past hour nobody recorded */
+.plog-table__hour.is-missed {
+  color: var(--muted);
+}
+.plog-table__hour.is-missed span {
+  color: var(--idle);
+  font-weight: 700;
+}
+.plog-table td.is-missed {
+  background: repeating-linear-gradient(135deg, transparent 0 6px, color-mix(in srgb, var(--idle) 10%, transparent) 6px 8px);
+}
+
+.plog__error {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+}

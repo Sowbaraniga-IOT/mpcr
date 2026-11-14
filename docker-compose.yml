@@ -1,0 +1,41 @@
+services:
+  mpcr-postgres:
+    image: postgres:17-alpine
+    container_name: mpcr-postgres-17
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: mpcr_db
+      POSTGRES_USER: mpcr_user
+      POSTGRES_PASSWORD: mpcr_secure_pass_2026!
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - mpcr_postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mpcr_user -d mpcr_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Optional pgAdmin 4 web dashboard for visual DB management
+  mpcr-pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: mpcr-pgadmin
+    restart: unless-stopped
+    depends_on:
+      mpcr-postgres:
+        condition: service_healthy
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@mpcr.com
+      PGADMIN_DEFAULT_PASSWORD: admin@2026
+    profiles:
+      - tools
+
+volumes:
+  mpcr_postgres_data:
+    driver: local
