@@ -56,7 +56,7 @@ class Config:
     mqtt_port: int = 1883
     mqtt_user: str = ''
     mqtt_password: str = ''
-    mqtt_topic: str = 'mpcr/euromap77/raw'
+    mqtt_topic: str = 'mpcr/euromap77/mpcr'
     mqtt_qos: int = 0
     mqtt_queue: int = 20000
     publish_ms: int = 1000  # at most one message per machine per this interval

@@ -4,7 +4,7 @@ Reads the FANUC ROBOSHOT machines from the plant's EUROMAP 77 OPC UA gateway and
 
 ```
 FANUC gateway  ──OPC UA (Basic256Sha256)──▶  MPCR EUROMAP 77 Collector  ──MQTT──▶  broker  ──▶  MPCR euromap_bridge  ──▶  dashboard
-opc.tcp://10.245.251.10:62553                 (this folder)                  mpcr/euromap77/raw
+opc.tcp://10.245.251.10:62553                 (this folder)                  mpcr/euromap77/mpcr
 ```
 
 It addresses machines the same way as the plant's existing collector: string NodeIds in namespace 6, such as `ns=6;s=IMM_FANUC_ROBOSHOT0005.Jobs.ActiveJobValues.LastCycleTime`. It uses the same client certificate and login, and its messages have the same shape (`{machine_node, machine, ts, data}`). On top of that, it subscribes to the per-shot **ROBOSHOTCycleParametersEvent**, which carries cushion, injection time, dosing (recovery) time, peak pressure, V-P position, barrel and mould temperatures, and the dryer and mould-water temperatures.
@@ -31,9 +31,9 @@ copy "<plant collector folder>\rconnect_key.pem"  certs\
 .venv\Scripts\python -m mpcr_collector                 # collect and publish (or double-click start-collector.cmd)
 ```
 
-`--probe` shows each machine's name, mode, last cycle time, tool and job counter, and whether the server has the cycle event type. Every minute the running collector logs how many sessions are connected, how many machines are live, and how many messages and cycle events it has handled. Its online state is published retained on `mpcr/euromap77/raw/collector`.
+`--probe` shows each machine's name, mode, last cycle time, tool and job counter, and whether the server has the cycle event type. Every minute the running collector logs how many sessions are connected, how many machines are live, and how many messages and cycle events it has handled. Its online state is published retained on `mpcr/euromap77/mpcr/collector`.
 
-Then point MPCR at it (`backend/.env`): `FANUC_MQTT_HOST=<this PC>` and `FANUC_MQTT_TOPIC=mpcr/euromap77/raw`, and start `manage.py euromap_bridge`.
+Then point MPCR at it (`backend/.env`): `FANUC_MQTT_HOST=<this PC>` and `FANUC_MQTT_TOPIC=mpcr/euromap77/mpcr`, and start `manage.py euromap_bridge`.
 
 ## Settings (`collector.env`)
 

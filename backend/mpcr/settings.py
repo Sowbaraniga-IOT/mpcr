@@ -167,7 +167,7 @@ CORS_ALLOWED_ORIGINS = [o for o in env('CORS_ALLOWED_ORIGINS', 'http://localhost
 # The plant's EUROMAP 77 collector (OPC UA → MQTT) that `manage.py euromap_bridge` listens to.
 FANUC_MQTT_HOST = env('FANUC_MQTT_HOST', 'localhost')
 FANUC_MQTT_PORT = int(env('FANUC_MQTT_PORT', '1883'))
-FANUC_MQTT_TOPIC = env('FANUC_MQTT_TOPIC', 'mpcr/euromap77/raw')  # MPCR's own collector (../collector); the plant collector uses factory/euromap77/raw
+FANUC_MQTT_TOPIC = env('FANUC_MQTT_TOPIC', 'mpcr/euromap77/mpcr')  # MPCR's own collector (../collector); the plant collector uses factory/euromap77/raw
 FANUC_MQTT_USER = env('FANUC_MQTT_USER', '')
 FANUC_MQTT_PASSWORD = env('FANUC_MQTT_PASSWORD', '')
 # Collector machine names that don't match an MPCR id apart from punctuation: "J1030=J10-30,…"
