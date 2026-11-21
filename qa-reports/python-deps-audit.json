@@ -1,0 +1,436 @@
+[
+ [
+  "Django",
+  "5.0.3",
+  [
+   [
+    "PYSEC-2024-58",
+    "BIT-django-2024-39330, CVE-2024-39330, GHSA-9jmf-237g-qf46",
+    "5.0.7, 4.2.14",
+    "An issue was discovered in Django 5.0 before 5.0.7 and 4.2 before 4.2.14. Derived classes "
+   ],
+   [
+    "PYSEC-2024-57",
+    "BIT-django-2024-39329, CVE-2024-39329, GHSA-x7q2-wr7g-xqmf",
+    "5.0.7, 4.2.14",
+    "An issue was discovered in Django 5.0 before 5.0.7 and 4.2 before 4.2.14. The django.contr"
+   ],
+   [
+    "PYSEC-2024-56",
+    "BIT-django-2024-38875, CVE-2024-38875, GHSA-qg2p-9jwr-mmqf",
+    "4.2.14, 5.0.7",
+    "An issue was discovered in Django 4.2 before 4.2.14 and 5.0 before 5.0.7. urlize and urliz"
+   ],
+   [
+    "PYSEC-2024-59",
+    "BIT-django-2024-39614, CVE-2024-39614, GHSA-f6f8-9mx6-9mx2",
+    "5.0.7, 4.2.14",
+    "An issue was discovered in Django 5.0 before 5.0.7 and 4.2 before 4.2.14. get_supported_la"
+   ],
+   [
+    "PYSEC-2024-69",
+    "BIT-django-2024-41991, CVE-2024-41991, GHSA-r836-hh6v-rg5g",
+    "5.0.8, 4.2.15",
+    "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. The urlize and u"
+   ],
+   [
+    "PYSEC-2024-70",
+    "BIT-django-2024-42005, CVE-2024-42005, GHSA-pv4p-cwwg-4rph",
+    "5.0.8, 4.2.15",
+    "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. QuerySet.values("
+   ],
+   [
+    "PYSEC-2024-68",
+    "BIT-django-2024-41990, CVE-2024-41990, GHSA-795c-9xpc-xw6g",
+    "5.0.8, 4.2.15",
+    "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. The urlize() and"
+   ],
+   [
+    "PYSEC-2024-67",
+    "BIT-django-2024-41989, CVE-2024-41989, GHSA-jh75-99hh-qvx9",
+    "5.0.8, 4.2.15",
+    "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. The floatformat "
+   ],
+   [
+    "PYSEC-2025-13",
+    "BIT-django-2025-26699, CVE-2025-26699, GHSA-p3fp-8748-vqfq",
+    "5.1.7, 5.0.13, 4.2.20",
+    "An issue was discovered in Django 5.1 before 5.1.7, 5.0 before 5.0.13, and 4.2 before 4.2."
+   ],
+   [
+    "PYSEC-2024-102",
+    "BIT-django-2024-45230, CVE-2024-45230, GHSA-5hgc-2vfp-mqvc",
+    "5.1.1, 5.0.9, 4.2.16",
+    "An issue was discovered in Django 5.1 before 5.1.1, 5.0 before 5.0.9, and 4.2 before 4.2.1"
+   ],
+   [
+    "GHSA-rrqc-c2jx-6jgv",
+    "BIT-django-2024-45231, CVE-2024-45231, PYSEC-2026-1297",
+    "5.1.1, 5.0.9, 4.2.16",
+    "An issue was discovered in Django v5.1.1, v5.0.9, and v4.2.16. The django.contrib.auth.for"
+   ],
+   [
+    "GHSA-5hgc-2vfp-mqvc",
+    "BIT-django-2024-45230, CVE-2024-45230, PYSEC-2024-102",
+    "5.1.1, 5.0.9, 4.2.16",
+    "An issue was discovered in Django 5.1 before 5.1.1, 5.0 before 5.0.9, and 4.2 before 4.2.1"
+   ],
+   [
+    "GHSA-wqfg-m96j-85vm",
+    "BIT-django-2025-27556, CVE-2025-27556, PYSEC-2025-14",
+    "5.0.14, 5.1.8",
+    "An issue was discovered in Django 5.1 before 5.1.8 and 5.0 before 5.0.14. The NFKC normali"
+   ],
+   [
+    "GHSA-8498-2h75-472j",
+    "BIT-django-2024-53907, CVE-2024-53907, PYSEC-2024-156",
+    "5.1.4, 4.2.17, 5.0.10, 5.1.4, 5.0.10, 4.2.17",
+    "An issue was discovered in Django 5.1 before 5.1.4, 5.0 before 5.0.10, and 4.2 before 4.2."
+   ],
+   [
+    "GHSA-m9g8-fxxm-xg86",
+    "BIT-django-2024-53908, CVE-2024-53908, PYSEC-2024-157",
+    "5.0.10, 5.1.4, 4.2.17, 5.1.4, 5.0.10, 4.2.17",
+    "An issue was discovered in Django 5.1 before 5.1.4, 5.0 before 5.0.10, and 4.2 before 4.2."
+   ],
+   [
+    "PYSEC-2024-157",
+    "BIT-django-2024-53908, CVE-2024-53908, GHSA-m9g8-fxxm-xg86",
+    "5.1.4, 5.0.10, 4.2.17",
+    "An issue was discovered in Django 5.1 before 5.1.4, 5.0 before 5.0.10, and 4.2 before 4.2."
+   ],
+   [
+    "PYSEC-2024-156",
+    "BIT-django-2024-53907, CVE-2024-53907, GHSA-8498-2h75-472j",
+    "5.1.4, 5.0.10, 4.2.17",
+    "An issue was discovered in Django 5.1 before 5.1.4, 5.0 before 5.0.10, and 4.2 before 4.2."
+   ],
+   [
+    "PYSEC-2025-1",
+    "BIT-django-2024-56374, CVE-2024-56374, GHSA-qcgg-j2x8-h9g8",
+    "5.1.5, 5.0.11, 4.2.18",
+    "An issue was discovered in Django 5.1 before 5.1.5, 5.0 before 5.0.11, and 4.2 before 4.2."
+   ],
+   [
+    "GHSA-qcgg-j2x8-h9g8",
+    "BIT-django-2024-56374, CVE-2024-56374, PYSEC-2025-1",
+    "5.1.5, 5.0.11, 4.2.18, 5.1.5, 5.0.11, 4.2.18",
+    "An issue was discovered in Django 5.1 before 5.1.5, 5.0 before 5.0.11, and 4.2 before 4.2."
+   ],
+   [
+    "PYSEC-2025-14",
+    "BIT-django-2025-27556, CVE-2025-27556, GHSA-wqfg-m96j-85vm",
+    "5.1.8, 5.0.14",
+    "An issue was discovered in Django 5.1 before 5.1.8 and 5.0 before 5.0.14. The NFKC normali"
+   ],
+   [
+    "GHSA-p3fp-8748-vqfq",
+    "BIT-django-2025-26699, CVE-2025-26699, PYSEC-2025-13",
+    "4.2.20, 5.0.13, 5.1.7",
+    "An issue was discovered in Django 5.1 before 5.1.7, 5.0 before 5.0.13, and 4.2 before 4.2."
+   ],
+   [
+    "GHSA-7xr5-9hcq-chf9",
+    "BIT-django-2025-48432, CVE-2025-48432, PYSEC-2025-47",
+    "5.2.2, 5.1.10, 4.2.22",
+    "An issue was discovered in Django 5.2 before 5.2.2, 5.1 before 5.1.10, and 4.2 before 4.2."
+   ],
+   [
+    "GHSA-6w2r-r2m5-xq5w",
+    "BIT-django-2025-57833, CVE-2025-57833, PYSEC-2025-105",
+    "4.2.24, 5.1.12, 5.2.6",
+    "An issue was discovered in Django 4.2 before 4.2.24, 5.1 before 5.1.12, and 5.2 before 5.2"
+   ],
+   [
+    "GHSA-qg2p-9jwr-mmqf",
+    "BIT-django-2024-38875, CVE-2024-38875, PYSEC-2024-56",
+    "4.2.14, 5.0.7",
+    "An issue was discovered in Django 4.2 before 4.2.14 and 5.0 before 5.0.7. urlize and urliz"
+   ],
+   [
+    "GHSA-f6f8-9mx6-9mx2",
+    "BIT-django-2024-39614, CVE-2024-39614, PYSEC-2024-59",
+    "5.0.7, 4.2.14",
+    "An issue was discovered in Django 5.0 before 5.0.7 and 4.2 before 4.2.14. `get_supported_l"
+   ],
+   [
+    "GHSA-x7q2-wr7g-xqmf",
+    "BIT-django-2024-39329, CVE-2024-39329, PYSEC-2024-57",
+    "5.0.7, 4.2.14",
+    "An issue was discovered in Django 5.0 before 5.0.7 and 4.2 before 4.2.14. The `django.cont"
+   ],
+   [
+    "GHSA-9jmf-237g-qf46",
+    "BIT-django-2024-39330, CVE-2024-39330, PYSEC-2024-58",
+    "5.0.7, 4.2.14",
+    "An issue was discovered in Django 5.0 before 5.0.7 and 4.2 before 4.2.14. Derived classes "
+   ],
+   [
+    "GHSA-r836-hh6v-rg5g",
+    "BIT-django-2024-41991, CVE-2024-41991, PYSEC-2024-69",
+    "5.0.8, 4.2.15",
+    "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. The urlize and u"
+   ],
+   [
+    "GHSA-795c-9xpc-xw6g",
+    "BIT-django-2024-41990, CVE-2024-41990, PYSEC-2024-68",
+    "5.0.8, 4.2.15",
+    "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. The urlize() and"
+   ],
+   [
+    "GHSA-pv4p-cwwg-4rph",
+    "BIT-django-2024-42005, CVE-2024-42005, PYSEC-2024-70",
+    "5.0.8, 4.2.15",
+    "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. QuerySet.values("
+   ],
+   [
+    "GHSA-jh75-99hh-qvx9",
+    "BIT-django-2024-41989, CVE-2024-41989, PYSEC-2024-67",
+    "5.0.8, 4.2.15",
+    "An issue was discovered in Django 5.0 before 5.0.8 and 4.2 before 4.2.15. The floatformat "
+   ],
+   [
+    "GHSA-qw25-v68c-qjf3",
+    "BIT-django-2025-64458, CVE-2025-64458, PYSEC-2025-107",
+    "5.2.8, 5.1.14, 4.2.26",
+    "An issue was discovered in 5.1 before 5.1.14, 4.2 before 4.2.26, and 5.2 before 5.2.8. NFK"
+   ],
+   [
+    "GHSA-frmv-pr5f-9mcr",
+    "BIT-django-2025-64459, CVE-2025-64459, PYSEC-2025-108",
+    "5.2.8, 5.1.14, 4.2.26",
+    "An issue was discovered in 5.1 before 5.1.14, 4.2 before 4.2.26, and 5.2 before 5.2.8. The"
+   ],
+   [
+    "PYSEC-2026-1297",
+    "CVE-2024-45231, GHSA-rrqc-c2jx-6jgv",
+    "4.2.16, 5.0.9, 5.1.1",
+    "An issue was discovered in Django v5.1.1, v5.0.9, and v4.2.16. The django.contrib.auth.for"
+   ],
+   [
+    "GHSA-q238-5cxm-5c9h",
+    "BIT-django-2026-15830, CVE-2026-15830, PYSEC-2026-3717",
+    "5.2.17, 6.0.8, 6.1.1",
+    "An issue was discovered in Django 5.2 before 5.2.17 and 6.0 before 6.0.8. GeoDjango's `dja"
+   ],
+   [
+    "GHSA-wvqv-fj8w-qmhm",
+    "CVE-2026-15307",
+    "5.2.17, 6.0.8",
+    "An issue was discovered in Django 5.2 before 5.2.17 and 6.0 before 6.0.8. GeoDjango spatia"
+   ],
+   [
+    "GHSA-923m-gv2p-w5qp",
+    "BIT-django-2026-48587, CVE-2026-48587, PYSEC-2026-198",
+    "5.2.15, 6.0.6",
+    "An issue was discovered in Django 5.2 before 5.2.15 and 6.0 before 6.0.6. `django.utils.ca"
+   ],
+   [
+    "GHSA-h7pc-vwp9-298g",
+    "BIT-django-2026-6873, CVE-2026-6873, PYSEC-2026-199",
+    "5.2.15, 6.0.6",
+    "An issue was discovered in Django 6.0 before 6.0.6 and 5.2 before 5.2.15. `django.http.Htt"
+   ],
+   [
+    "GHSA-8cjm-8mp7-r2xf",
+    "BIT-django-2026-8404, CVE-2026-8404, PYSEC-2026-201",
+    "5.2.15, 6.0.6",
+    "An issue was discovered in Django 5.2 before 5.2.15 and 6.0 before 6.0.6. `django.middlewa"
+   ],
+   [
+    "GHSA-3h9f-r86x-qvjx",
+    "BIT-django-2026-48588, CVE-2026-48588, PYSEC-2026-2090",
+    "5.2.16, 6.0.7",
+    "An issue was discovered in Django 6.0 before 6.0.7 and 5.2 before 5.2.16. `UpdateCacheMidd"
+   ],
+   [
+    "GHSA-crhf-3pfg-w68w",
+    "BIT-django-2026-53877, CVE-2026-53877, PYSEC-2026-2091",
+    "5.2.16, 6.0.7",
+    "An issue was discovered in Django 6.0 before 6.0.7 and 5.2 before 5.2.16. `django.contrib."
+   ],
+   [
+    "GHSA-8qcx-xf44-272x",
+    "BIT-django-2026-53878, CVE-2026-53878, PYSEC-2026-2092",
+    "5.2.16, 6.0.7",
+    "An issue was discovered in Django 6.0 before 6.0.7 and 5.2 before 5.2.16. `DomainNameValid"
+   ],
+   [
+    "PYSEC-2026-3717",
+    "BIT-django-2026-15830, CVE-2026-15830, GHSA-q238-5cxm-5c9h",
+    "5.2.17, 6.0.8",
+    "An issue was discovered in Django 5.2 before 5.2.17 and 6.0 before 6.0.8. GeoDjango's `dja"
+   ],
+   [
+    "PYSEC-2026-4035",
+    "CVE-2026-15307, GHSA-wvqv-fj8w-qmhm",
+    "5.2.17, 6.0.8",
+    "An issue was discovered in Django 5.2 before 5.2.17 and 6.0 before 6.0.8. GeoDjango spatia"
+   ]
+  ]
+ ],
+ [
+  "djangorestframework",
+  "3.15.1",
+  [
+   [
+    "GHSA-gw84-84pc-xp82",
+    "CVE-2024-21520, PYSEC-2026-1304",
+    "3.15.2",
+    "Versions of the package djangorestframework before 3.15.2 are vulnerable to Cross-site Scr"
+   ],
+   [
+    "PYSEC-2026-1304",
+    "CVE-2024-21520, GHSA-gw84-84pc-xp82",
+    "3.15.2",
+    "Versions of the package djangorestframework before 3.15.2 are vulnerable to Cross-site Scr"
+   ],
+   [
+    "GHSA-2m8g-3cmr-wg3w",
+    "CVE-2026-73228",
+    "3.17.2",
+    "## Summary  While investigating Django REST Framework's request parsing behavior, I identi"
+   ],
+   [
+    "GHSA-g47c-3xmw-q6m2",
+    "CVE-2026-73229",
+    "3.17.2",
+    "Summary  AdminRenderer may disclose data that would normally be protected by GET permissio"
+   ],
+   [
+    "PYSEC-2026-3827",
+    "CVE-2026-73228, GHSA-2m8g-3cmr-wg3w",
+    "3.17.2",
+    "## Summary  While investigating Django REST Framework's request parsing behavior, I identi"
+   ],
+   [
+    "PYSEC-2026-3828",
+    "CVE-2026-73229, GHSA-g47c-3xmw-q6m2",
+    "3.17.2",
+    "Summary  AdminRenderer may disclose data that would normally be protected by GET permissio"
+   ],
+   [
+    "GHSA-33wh-fxxf-88vv",
+    "CVE-2026-114138",
+    "3.18.2",
+    "### Summary  DRF's content negotiation parses each Accept token several times per request "
+   ],
+   [
+    "GHSA-3547-9m27-7rxg",
+    "CVE-2026-114136",
+    "3.18.2",
+    "### Summary  An unauthenticated attacker can defeat Django's `DATA_UPLOAD_MAX_MEMORY_SIZE`"
+   ],
+   [
+    "GHSA-xw6w-gcfp-cf8m",
+    "CVE-2026-114137",
+    "3.18.2",
+    "### Summary  Deleting an authentication token through `TokenProxy` silently deletes nothin"
+   ]
+  ]
+ ],
+ [
+  "django-cors-headers",
+  "4.3.1",
+  []
+ ],
+ [
+  "psycopg2-binary",
+  "2.9.9",
+  []
+ ],
+ [
+  "asgiref",
+  "3.8.1",
+  []
+ ],
+ [
+  "sqlparse",
+  "0.4.4",
+  [
+   [
+    "GHSA-2m57-hf25-phgg",
+    "CVE-2024-4340, PYSEC-2026-1940",
+    "0.5.0",
+    "### Summary Passing a heavily nested list to sqlparse.parse() leads to a Denial of Service"
+   ],
+   [
+    "GHSA-27jp-wm6q-gp25",
+    "",
+    "0.5.4",
+    "### Summary The below gist hangs while attempting to format a long list of tuples.  This w"
+   ],
+   [
+    "PYSEC-2026-1940",
+    "CVE-2024-4340, GHSA-2m57-hf25-phgg",
+    "0.5.0",
+    "### Summary Passing a heavily nested list to sqlparse.parse() leads to a Denial of Service"
+   ],
+   [
+    "GHSA-f2ff-p2ww-7p4p",
+    "CVE-2026-71491, PYSEC-2026-3697",
+    "0.6.0",
+    "### Summary A comment-only statement (`-- c\\n`*n) may cause a Denial of Service (DoS).  ##"
+   ],
+   [
+    "GHSA-3496-9g83-7v6x",
+    "CVE-2026-59894, PYSEC-2026-3696",
+    "0.6.0",
+    "### Summary  The documented Python and PHP output modes generate source-code snippets from"
+   ],
+   [
+    "GHSA-prg7-hcfm-mfcr",
+    "CVE-2026-59893, PYSEC-2026-3698",
+    "0.6.0",
+    "### Summary  sqlparse contains a Regular Expression Denial of Service (ReDoS) vulnerabilit"
+   ],
+   [
+    "GHSA-pwgv-4x5q-6m9f",
+    "CVE-2026-54284, PYSEC-2026-3699",
+    "0.6.0",
+    "### Summary  `sqlparse` ships hard limits (`MAX_GROUPING_DEPTH=100`, `MAX_GROUPING_TOKENS="
+   ],
+   [
+    "PYSEC-2026-3698",
+    "CVE-2026-59893, GHSA-prg7-hcfm-mfcr",
+    "0.6.0",
+    "### Summary  sqlparse contains a Regular Expression Denial of Service (ReDoS) vulnerabilit"
+   ],
+   [
+    "PYSEC-2026-3697",
+    "CVE-2026-71491, GHSA-f2ff-p2ww-7p4p",
+    "0.6.0",
+    "### Summary A comment-only statement (`-- c\\n`*n) may cause a Denial of Service (DoS).  ##"
+   ],
+   [
+    "PYSEC-2026-3699",
+    "CVE-2026-54284, GHSA-pwgv-4x5q-6m9f",
+    "0.6.0",
+    "### Summary  `sqlparse` ships hard limits (`MAX_GROUPING_DEPTH=100`, `MAX_GROUPING_TOKENS="
+   ],
+   [
+    "PYSEC-2026-3696",
+    "CVE-2026-59894, GHSA-3496-9g83-7v6x",
+    "0.6.0",
+    "### Summary  The documented Python and PHP output modes generate source-code snippets from"
+   ],
+   [
+    "GHSA-cfqr-cjx5-5jcm",
+    "CVE-2026-84305",
+    "0.6.0",
+    "### Summary  When SQL is formatted with reindentation enabled, `ReindentFilter` repeatedly"
+   ],
+   [
+    "PYSEC-2026-3923",
+    "CVE-2026-84305, GHSA-cfqr-cjx5-5jcm",
+    "0.6.0",
+    "### Summary  When SQL is formatted with reindentation enabled, `ReindentFilter` repeatedly"
+   ]
+  ]
+ ],
+ [
+  "tzdata",
+  "2024.1",
+  []
+ ]
+]

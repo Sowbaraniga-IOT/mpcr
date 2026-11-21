@@ -1,0 +1,96 @@
+.dmon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--ink);
+  border-left: 6px solid var(--accent);
+  background: var(--card);
+}
+.dmon__title h2 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+.dmon__title p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.dmon__levels {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.dmon__level {
+  --alert: var(--neon-green);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px 6px 8px;
+  border: 1.5px solid var(--rule);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.dmon__level--open {
+  --alert: var(--neon-red);
+}
+.dmon__level--awaiting {
+  --alert: var(--neon-yellow);
+}
+.dmon__level:hover {
+  border-color: var(--ink);
+}
+.dmon__level[aria-pressed='true'] {
+  border-color: var(--alert);
+  background: color-mix(in srgb, var(--alert) 12%, var(--card));
+}
+.dmon__level strong {
+  font-size: 22px;
+  line-height: 1;
+}
+.dmon__text {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  color: var(--muted);
+}
+.dmon__text .mono {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* A small square that blinks or glows the same way the cards do */
+.dmon__swatch {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--alert);
+  animation: mcard-neon 0.9s ease-in-out infinite;
+}
+.dmon__level--awaiting .dmon__swatch {
+  animation-duration: 1.8s;
+}
+.dmon__level--accepted .dmon__swatch {
+  animation: mcard-glow 3s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dmon__swatch {
+    animation: none !important;
+    background: var(--alert);
+  }
+}
+
+.dmon__clear {
+  margin: 0 0 0 auto;
+  font-size: 11px;
+  color: var(--run);
+  font-weight: 700;
+}

@@ -1,0 +1,581 @@
+.drawing {
+  margin: 24px 0 0;
+}
+
+.drawing__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Strokes use the same tokens as the rest of the page,
+   so the drawing re-colours itself in Night mode. */
+.drawing__svg .ink {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.drawing__svg .ink-thin {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+.drawing__svg .centerline {
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-dasharray: 22 6 4 6; /* dash · dot · dash: the drafting centre-line */
+}
+
+.drawing__svg .accent-thin {
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+.drawing__svg .accent-fill {
+  fill: var(--accent);
+}
+.drawing__svg .accent-dashed {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+}
+.drawing__svg .accent-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.drawing__svg .cavity {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.drawing__svg .dim {
+  stroke: var(--muted);
+  stroke-width: 1;
+}
+.drawing__svg .dim-fill {
+  fill: var(--muted);
+}
+
+.drawing__svg .balloon {
+  fill: var(--paper);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.drawing__svg .balloon__num {
+  fill: var(--accent);
+  font: 500 15px var(--font-mono);
+  text-anchor: middle;
+}
+
+.drawing__svg .label {
+  fill: var(--ink);
+  font: 500 13px var(--font-mono);
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+.drawing__svg .label--center {
+  text-anchor: middle;
+}
+.drawing__svg .label--accent {
+  fill: var(--accent);
+  opacity: 1;
+}
+
+/* Little interaction: hovering a balloon highlights it */
+.drawing__svg .callout {
+  cursor: default;
+}
+.drawing__svg .callout:hover .balloon {
+  fill: var(--accent);
+}
+.drawing__svg .callout:hover .balloon__num {
+  fill: var(--on-accent);
+}
+
+/* ---------- Moulding cycle animation ----------
+   One cycle (--cycle) runs: clamp closes · screw injects · hold · cooling while the screw turns back ·
+   mould opens · part drops out. Percentages match PHASES in MachineDrawing.jsx.
+   Without motion (reduced-motion setting) the drawing stays as a still, closed machine. */
+.drawing {
+  --cycle: 6s;
+}
+.drawing.is-running {
+  --cycle: 1.2s;
+}
+.drawing__svg .anim-toggle {
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+.drawing__svg .anim-screw__turn {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.drawing__svg .anim-melt {
+  stroke: var(--accent);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 125;
+  stroke-dashoffset: 125;
+}
+.drawing__svg .anim-pellet {
+  fill: var(--ink);
+  opacity: 0;
+}
+.drawing__svg .cycle-status__dot {
+  fill: var(--run);
+}
+.drawing__svg .cycle-status__phase {
+  fill: var(--accent);
+  opacity: 0;
+}
+.drawing__svg .cycle-status__phase--close {
+  opacity: 1;
+}
+.drawing__svg .cycle-status__shots {
+  font-size: 11px;
+  opacity: 0.65;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .drawing__svg .anim-clamp,
+  .drawing__svg .anim-toggle,
+  .drawing__svg .anim-screw,
+  .drawing__svg .anim-screw__turn,
+  .drawing__svg .anim-melt,
+  .drawing__svg .anim-part,
+  .drawing__svg .anim-part .cavity,
+  .drawing__svg .cycle-status__phase {
+    animation-duration: var(--cycle);
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+  .drawing__svg .anim-clamp {
+    animation-name: clamp-travel;
+  }
+  .drawing__svg .anim-toggle {
+    animation-name: toggle-fold;
+  }
+  .drawing__svg .anim-screw {
+    animation-name: screw-stroke;
+  }
+  .drawing__svg .anim-screw__turn {
+    animation-name: screw-turn;
+    animation-timing-function: step-end;
+  }
+  .drawing__svg .anim-melt {
+    animation-name: melt-flow;
+    animation-timing-function: linear;
+  }
+  .drawing__svg .anim-part {
+    animation-name: part-eject;
+  }
+  .drawing__svg .anim-part .cavity {
+    animation-name: part-fill;
+  }
+  .drawing__svg .cycle-status__phase {
+    animation-timing-function: step-end;
+  }
+  .drawing__svg .cycle-status__phase--close {
+    animation-name: phase-close;
+  }
+  .drawing__svg .cycle-status__phase--inject {
+    animation-name: phase-inject;
+  }
+  .drawing__svg .cycle-status__phase--hold {
+    animation-name: phase-hold;
+  }
+  .drawing__svg .cycle-status__phase--cool {
+    animation-name: phase-cool;
+  }
+  .drawing__svg .cycle-status__phase--open {
+    animation-name: phase-open;
+  }
+  .drawing__svg .cycle-status__phase--eject {
+    animation-name: phase-eject;
+  }
+  .drawing__svg .heater {
+    animation: heater-glow 2.4s ease-in-out infinite alternate;
+  }
+  .drawing__svg .anim-pellet {
+    animation: pellet-drop 1s linear infinite;
+  }
+  .drawing__svg .cycle-status__dot {
+    animation: status-blink 1s step-end infinite;
+  }
+}
+
+@keyframes clamp-travel {
+  0% {
+    transform: translateX(-50px);
+  }
+  12%,
+  62% {
+    transform: none;
+  }
+  74%,
+  100% {
+    transform: translateX(-50px);
+  }
+}
+@keyframes toggle-fold {
+  0% {
+    transform: scaleX(0.63);
+  }
+  12%,
+  62% {
+    transform: none;
+  }
+  74%,
+  100% {
+    transform: scaleX(0.63);
+  }
+}
+@keyframes screw-stroke {
+  0%,
+  14% {
+    transform: none;
+  }
+  30%,
+  40% {
+    transform: translateX(-20px);
+  }
+  58%,
+  100% {
+    transform: none;
+  }
+}
+/* Flipping the zigzag about the centre line reads as the flights turning */
+@keyframes screw-turn {
+  0%,
+  44%,
+  52%,
+  60% {
+    transform: none;
+  }
+  40%,
+  48%,
+  56% {
+    transform: scaleY(-1);
+  }
+}
+@keyframes melt-flow {
+  0%,
+  14% {
+    stroke-dashoffset: 125;
+    opacity: 1;
+  }
+  30%,
+  40% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  46%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes part-fill {
+  0%,
+  14% {
+    fill: var(--accent-soft);
+  }
+  30%,
+  40% {
+    fill: var(--accent);
+  }
+  62%,
+  100% {
+    fill: color-mix(in srgb, var(--accent) 55%, var(--ink));
+  }
+}
+@keyframes part-eject {
+  0%,
+  13.99% {
+    transform: none;
+    opacity: 0;
+  }
+  14%,
+  76% {
+    transform: none;
+    opacity: 1;
+  }
+  88% {
+    transform: translateY(100px);
+    opacity: 1;
+  }
+  94%,
+  100% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+}
+@keyframes heater-glow {
+  from {
+    stroke: var(--ink);
+  }
+  to {
+    stroke: var(--accent);
+  }
+}
+@keyframes pellet-drop {
+  0% {
+    transform: none;
+    opacity: 0;
+  }
+  15%,
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(75px);
+    opacity: 0;
+  }
+}
+@keyframes status-blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+@keyframes phase-close {
+  0%,
+  11.99% {
+    opacity: 1;
+  }
+  12%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes phase-inject {
+  0%,
+  11.99% {
+    opacity: 0;
+  }
+  12%,
+  29.99% {
+    opacity: 1;
+  }
+  30%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes phase-hold {
+  0%,
+  29.99% {
+    opacity: 0;
+  }
+  30%,
+  39.99% {
+    opacity: 1;
+  }
+  40%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes phase-cool {
+  0%,
+  39.99% {
+    opacity: 0;
+  }
+  40%,
+  61.99% {
+    opacity: 1;
+  }
+  62%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes phase-open {
+  0%,
+  61.99% {
+    opacity: 0;
+  }
+  62%,
+  73.99% {
+    opacity: 1;
+  }
+  74%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes phase-eject {
+  0%,
+  73.99% {
+    opacity: 0;
+  }
+  74%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ---------- More cycle detail: lit callouts, Detail A, process monitor ---------- */
+@property --lit {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+.drawing__svg .callout .balloon {
+  fill: color-mix(in srgb, var(--accent) calc(var(--lit) * 100%), var(--paper));
+}
+.drawing__svg .callout .balloon__num {
+  fill: color-mix(in srgb, var(--on-accent) calc(var(--lit) * 100%), var(--accent));
+}
+.drawing__svg .callout:hover {
+  --lit: 1;
+}
+.drawing__svg .pchart__title,
+.drawing__svg .pchart__peak {
+  font-size: 11px;
+}
+.drawing__svg .pchart__peak {
+  text-anchor: end;
+}
+.drawing__svg .pchart__mark {
+  font-size: 9px;
+  opacity: 0.6;
+}
+.drawing__svg .pchart__grid {
+  stroke: var(--rule);
+  stroke-dasharray: 3 4;
+}
+.drawing__svg .pchart__ghost {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+  opacity: 0.6;
+}
+.drawing__svg .pchart__trace {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.drawing__svg .pchart__cursor {
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .drawing__svg .callout,
+  .drawing__svg .anim-detail .cavity,
+  .drawing__svg .pchart__cursor {
+    animation-duration: var(--cycle);
+    animation-iteration-count: infinite;
+  }
+  .drawing__svg .callout {
+    animation-timing-function: step-end;
+  }
+  .drawing__svg .callout--1 {
+    animation-name: callout-1;
+  }
+  .drawing__svg .callout--2 {
+    animation-name: callout-2;
+  }
+  .drawing__svg .callout--3 {
+    animation-name: callout-3;
+  }
+  .drawing__svg .callout--4 {
+    animation-name: callout-4;
+  }
+  .drawing__svg .callout--5 {
+    animation-name: callout-5;
+  }
+  .drawing__svg .anim-detail .cavity {
+    animation-name: part-fill;
+    animation-timing-function: ease-in-out;
+  }
+  .drawing__svg .pchart__reveal {
+    transform-box: fill-box;
+    transform-origin: left center;
+    animation: trace-draw var(--cycle) linear infinite;
+  }
+  .drawing__svg .pchart__cursor {
+    opacity: 0.8;
+    animation-name: trace-cursor;
+    animation-timing-function: linear;
+  }
+}
+@keyframes trace-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes trace-cursor {
+  from {
+    transform: none;
+  }
+  to {
+    transform: translateX(410px);
+  }
+}
+@keyframes callout-1 {
+  40% {
+    --lit: 1;
+  }
+  0%,
+  62%,
+  100% {
+    --lit: 0;
+  }
+}
+@keyframes callout-2 {
+  40% {
+    --lit: 1;
+  }
+  0%,
+  62%,
+  100% {
+    --lit: 0;
+  }
+}
+@keyframes callout-3 {
+  12% {
+    --lit: 1;
+  }
+  0%,
+  30%,
+  100% {
+    --lit: 0;
+  }
+}
+@keyframes callout-4 {
+  30%,
+  74%,
+  100% {
+    --lit: 1;
+  }
+  0%,
+  40% {
+    --lit: 0;
+  }
+}
+@keyframes callout-5 {
+  0%,
+  62% {
+    --lit: 1;
+  }
+  12%,
+  74%,
+  100% {
+    --lit: 0;
+  }
+}

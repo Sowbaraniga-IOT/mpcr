@@ -1,0 +1,46 @@
+[
+  {
+    "id": "UI-F01",
+    "severity": "Medium",
+    "module": "Launch / assets",
+    "title": "Brand fonts never load on the plant network",
+    "steps": "Open the app on this PC; check the network log (E2E-01, E2E-37).",
+    "expected": "Inter and JetBrains Mono load",
+    "actual": "fonts.googleapis.com dropped by the firewall on every page load; the app falls back to system fonts",
+    "cause": "index.html links Google Fonts (an external host). The plant network blocks it, so the design fonts are never applied and every load starts a doomed request.",
+    "fix": "Serve the two fonts from the app itself: put the .woff2 files in public/fonts (available from cdn.jsdelivr.net/npm/@fontsource/*, which this network allows), declare them with @font-face in index.css, remove the Google links."
+  },
+  {
+    "id": "A11Y-F01",
+    "severity": "Low",
+    "module": "Machine / Parameter master",
+    "title": "Excel upload file inputs have no accessible name",
+    "steps": "Open #/settings/machines or #/settings/parameters; inspect input.visually-hidden (E2E-33).",
+    "expected": "Every form control has a name",
+    "actual": "Visually hidden <input type=file> without label or aria-label; screen readers announce an unnamed control",
+    "cause": "The file input is hidden and triggered by the Upload button, but stays in the accessibility tree without a name.",
+    "fix": "Add aria-label=\"Upload Excel file\" (or tabIndex={-1} aria-hidden=\"true\", since the visible button already opens it)."
+  },
+  {
+    "id": "UI-F03",
+    "severity": "Low",
+    "module": "Header (tablet)",
+    "title": "Notification bell covers the page title at 768 px",
+    "steps": "Open the dashboard at 768 × 1024 (E2E-32 screenshot dashboard-768.png).",
+    "expected": "Title \"Dashboard · Plant 01\" readable",
+    "actual": "The bell button sits on top of the title (\"D…ARD\", \"P…01\")",
+    "cause": "At tablet width the header actions wrap into the title column without reserving its width.",
+    "fix": "Give the title block flex: 1 1 auto with min-width, or move the actions to their own row below 900 px."
+  },
+  {
+    "id": "UI-F04",
+    "severity": "Low",
+    "module": "Report filters (phone)",
+    "title": "Date range: second calendar icon sticks out of its box at 375 px",
+    "steps": "Open #/report at 375 × 812 (report-375.png).",
+    "expected": "Both date fields inside the filter panel",
+    "actual": "The \"to\" date's calendar icon overflows the field's right edge",
+    "cause": "The two date inputs keep their intrinsic width in a row that is narrower than both together.",
+    "fix": "Let the date row wrap below ~420 px, or set min-width: 0; width: 100% on the date inputs."
+  }
+]

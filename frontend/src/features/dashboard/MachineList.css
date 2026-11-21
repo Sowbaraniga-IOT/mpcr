@@ -1,0 +1,121 @@
+/* Wide table scrolls sideways on small screens instead of squashing */
+.mlist {
+  overflow-x: auto;
+  border: 2px solid var(--ink);
+  background: var(--card);
+}
+
+.mlist table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.mlist th,
+.mlist td {
+  padding: 12px 14px;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--rule);
+}
+.mlist .num {
+  text-align: right;
+}
+
+.mlist thead th {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  border-bottom: 2px solid var(--ink);
+}
+
+.mlist tbody th {
+  font-weight: 700;
+}
+.mlist__id {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.mlist tbody tr {
+  cursor: pointer;
+}
+.mlist tbody tr:hover {
+  background: var(--accent-soft);
+}
+.mlist tbody tr.is-selected {
+  box-shadow: inset 4px 0 var(--accent);
+  background: var(--accent-soft);
+}
+.mlist tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.mlist .is-dev {
+  color: var(--alarm);
+  font-weight: 700;
+}
+.mlist .is-ok {
+  color: var(--muted);
+}
+
+.mlist__action {
+  border: 1.5px solid var(--ink);
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.mlist__action:hover {
+  background: var(--ink);
+  color: var(--card);
+}
+
+/* Deviation alerts (admins only): the row's first cell blinks or glows like the cards */
+.mlist tr.has-alert > th {
+  animation: mlist-blink 0.9s steps(2, jump-none) infinite;
+}
+.mlist tr.has-alert--open {
+  --alert: var(--neon-red);
+}
+.mlist tr.has-alert--awaiting {
+  --alert: var(--neon-yellow);
+}
+.mlist tr.has-alert--awaiting > th {
+  animation-duration: 1.8s;
+}
+.mlist tr.has-alert--accepted {
+  --alert: var(--neon-green);
+}
+.mlist tr.has-alert--accepted > th {
+  animation: none;
+  box-shadow: inset 6px 0 var(--alert);
+  background: color-mix(in srgb, var(--alert) 12%, var(--card));
+}
+@keyframes mlist-blink {
+  0% {
+    box-shadow: inset 6px 0 var(--alert);
+    background: color-mix(in srgb, var(--alert) 18%, var(--card));
+  }
+  100% {
+    box-shadow: inset 6px 0 transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mlist tr.has-alert > th {
+    animation: none;
+    box-shadow: inset 6px 0 var(--alert);
+  }
+}
+.mlist .has-alert .is-alert {
+  color: color-mix(in srgb, var(--alert) 80%, var(--ink));
+  font-weight: 700;
+}
+.mlist .has-alert--awaiting .is-alert {
+  color: color-mix(in srgb, var(--alert) 45%, var(--ink));
+}

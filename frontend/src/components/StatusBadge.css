@@ -1,0 +1,15 @@
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* One colour per status; the same tokens drive the dots and card tops */
+.status-badge--run { background: var(--run); }
+.status-badge--idle { background: var(--idle); }
+.status-badge--maint { background: var(--maint); }
+.status-badge--alarm { background: var(--alarm); }
+.status-badge--off { background: var(--off); }

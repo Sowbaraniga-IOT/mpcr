@@ -1,0 +1,97 @@
+/* Two columns: drawing on the left, login card on the right */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(360px, 1fr);
+  gap: 48px;
+  min-height: calc(var(--app-h) - 100px);
+  padding: 24px 32px;
+}
+
+.layout__left {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.layout__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 40px;
+}
+
+.layout__footer {
+  margin: auto 0 0;
+  padding-top: 16px;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: none;
+}
+
+/* Tablet & phone: stack the columns */
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 16px;
+  }
+  .layout__right {
+    align-items: stretch;
+  }
+  /* One column, in the order a phone user needs it: logo, sign-in card, then the drawing.
+     The left column dissolves so its children can be ordered around the card. */
+  .layout__left {
+    display: contents;
+  }
+  .layout > .layout__left > .brand {
+    order: 0;
+  }
+  .layout__right {
+    order: 1;
+  }
+  .layout > .layout__left > .drawing {
+    order: 2;
+  }
+  .layout > .layout__left > .layout__footer {
+    order: 3;
+  }
+}
+
+/* While the plant's data loads after sign-in */
+.app-loading {
+  margin: auto;
+  padding: 40px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* A save the server refused or never got */
+.app-error {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: min(720px, calc(100vw - 32px));
+  padding: 10px 14px;
+  border: 2px solid var(--accent);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 13px;
+  box-shadow: 4px 4px 0 var(--accent-soft);
+  transform: translateX(-50%);
+}
+.app-error strong {
+  color: var(--accent);
+}
+.app-error button {
+  flex: none;
+  padding: 4px 10px;
+  border: 1.5px solid var(--ink);
+  background: none;
+  color: var(--ink);
+  font-size: 11px;
+  cursor: pointer;
+}

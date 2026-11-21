@@ -1,0 +1,24 @@
+.theme-toggle {
+  display: inline-flex;
+  border: 1px solid var(--ink);
+  align-self: flex-end;
+}
+
+.theme-toggle__btn {
+  border: 0;
+  padding: 9px 16px;
+  font-size: 11px;
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.theme-toggle__btn + .theme-toggle__btn {
+  border-left: 1px solid var(--ink);
+}
+
+/* aria-pressed doubles as our "active" styling hook */
+.theme-toggle__btn[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--on-accent);
+}

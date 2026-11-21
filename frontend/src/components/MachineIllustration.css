@@ -1,0 +1,29 @@
+.machine-illustration {
+  display: block;
+  width: 78%;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.machine-illustration polygon {
+  stroke: var(--ink);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+}
+
+/* Three shades per material: lit top, mid side, shaded end */
+.iso--bed .iso__top { fill: var(--iso-bed-1); }
+.iso--bed .iso__side { fill: var(--iso-bed-2); }
+.iso--bed .iso__end { fill: var(--iso-bed-3); }
+
+.iso--metal .iso__top { fill: var(--iso-metal-1); }
+.iso--metal .iso__side { fill: var(--iso-metal-2); }
+.iso--metal .iso__end { fill: var(--iso-metal-3); }
+
+.iso--mould .iso__top { fill: #ff6a60; }
+.iso--mould .iso__side { fill: var(--accent); }
+.iso--mould .iso__end { fill: #b81a15; }
+
+.iso__screen {
+  fill: var(--maint);
+}

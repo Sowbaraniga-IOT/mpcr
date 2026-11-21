@@ -1,0 +1,172 @@
+/* ------------------------------------------------------------------
+   Design tokens: every colour lives in a CSS variable.
+   The Paper/Night toggle only swaps these values, nothing else.
+------------------------------------------------------------------- */
+:root {
+  /* The window size in page pixels; scale.js updates them when it zooms the app to fit */
+  --app-h: 100vh;
+  --app-w: 100vw;
+
+  --paper: #f3efe8;
+  --card: #faf8f4;
+  --ink: #1a1a1a;
+  --muted: #5e5a55;
+  --accent: #e3241f;
+  --accent-soft: rgba(227, 36, 31, 0.12);
+  --grid: rgba(227, 36, 31, 0.05);
+  --grid-major: rgba(227, 36, 31, 0.1);
+  --rule: #cfc9bf;
+  --on-accent: #ffffff;
+  --well: #ebe6dc; /* recessed panels, e.g. machine photos */
+
+  /* Machine status colours */
+  --run: #1f9d48;
+  --idle: #f29a12;
+  --maint: #2f6fe0;
+  --alarm: #e3241f;
+  --off: #8a8580;
+
+  /* Dashboard deviation alerts: no reason · waiting for approval · reason accepted */
+  --neon-red: #ff1a1a;
+  --neon-yellow: #ffc400;
+  --neon-green: #10c95a;
+
+  /* Isometric machine drawing: lit / side / shaded faces */
+  --iso-bed-1: #efe9dc;
+  --iso-bed-2: #ddd5c3;
+  --iso-bed-3: #c7bda8;
+  --iso-metal-1: #d9dde2;
+  --iso-metal-2: #b6bcc4;
+  --iso-metal-3: #959ca6;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+:root[data-theme='night'] {
+  --paper: #0f141b;
+  --card: #151b24;
+  --ink: #e7e2d9;
+  --muted: #9aa1aa;
+  --accent: #ff4a3d;
+  --accent-soft: rgba(255, 74, 61, 0.16);
+  --grid: rgba(130, 170, 255, 0.06);
+  --grid-major: rgba(130, 170, 255, 0.12);
+  --rule: #2c3542;
+  --on-accent: #ffffff;
+  --well: #1b232e;
+
+  --run: #2fbf5f;
+  --idle: #f5a623;
+  --maint: #4d8af0;
+  --alarm: #ff4a3d;
+  --off: #6f7782;
+
+  --neon-red: #ff3b3b;
+  --neon-yellow: #ffe23a;
+  --neon-green: #3dff85;
+
+  --iso-bed-1: #4a525e;
+  --iso-bed-2: #3a414b;
+  --iso-bed-3: #2c323a;
+  --iso-metal-1: #6b7582;
+  --iso-metal-2: #535c68;
+  --iso-metal-3: #3f4650;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+}
+
+/* iPhone / iPad Safari: keep text the designed size when the phone is turned to landscape */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* iOS Safari zooms the whole page into any field whose text is under 16px when it is tapped,
+   and does not zoom back out. Phone-sized iOS screens only (-webkit-touch-callout is iOS-only). */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 899.98px) {
+    input:not([type='checkbox']):not([type='radio']),
+    select,
+    textarea {
+      font-size: max(16px, 1em);
+    }
+  }
+}
+/* Blueprint grid: small 20px cells + bold 100px cells.
+   Scroll panes paint their own copy, pinned to the window so it lines up with the page's:
+   a see-through pane that scrolls is drawn on its own GPU layer with lighter text and a
+   washed-out grid, so long lists (All, Run) looked duller than short ones. */
+body,
+.paper-grid {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:
+    100px 100px,
+    100px 100px,
+    20px 20px,
+    20px 20px;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Hidden on screen, still read by screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Line icons drawn with SVG paths */
+.icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Small square status marker */
+.dot {
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+}
+.dot--run { background: var(--run); }
+.dot--idle { background: var(--idle); }
+.dot--maint { background: var(--maint); }
+.dot--alarm { background: var(--alarm); }
+.dot--off { background: var(--off); }
