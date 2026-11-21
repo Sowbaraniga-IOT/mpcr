@@ -16,15 +16,73 @@ Two kinds of source:
 
 VARIABLES = {
     'machinename': 'MachineConfiguration.UserMachineName',
-    'operating_status': 'MachineStatus.MachineMode',
-    'present': 'MachineStatus.IsPresent',
     'tool': 'Jobs.ActiveJob.ProductionDatasetName',
-    'ProductName': 'Jobs.ActiveJob.ProductName',
-    'cavity': 'Jobs.ActiveJob.NumCavities',
-    'jobcyclecounter': 'Jobs.ActiveJobValues.JobCycleCounter',
-    'machinecyclecounter': 'Jobs.ActiveJobValues.MachineCycleCounter',
-    'cycletime': 'Jobs.ActiveJobValues.LastCycleTime',
+    'Part_Number': 'Jobs.ActiveJob.ProductName',
+    #'operating_status': 'MachineStatus.MachineMode',
+    #'present': 'MachineStatus.IsPresent',
+    #'cavity': 'Jobs.ActiveJob.NumCavities',
+    #'jobcyclecounter': 'Jobs.ActiveJobValues.JobCycleCounter',
+    #'machinecyclecounter': 'Jobs.ActiveJobValues.MachineCycleCounter',
+     # FANUC molding setpoints (FANUCMoldingParameters, seen on the gateway in nodes.uap)
+    'cycle_time': 'Jobs.ActiveJobValues.LastCycleTime',
+    'max_injection_pressure': 'FANUCMoldingParameters.InjectionParameters.SingleMaxPressure',  # MAX INJ PRS
+    'injection_hr_mode': 'FANUCMoldingParameters.InjectionParameters.HRMode',  # HR MODE
+    'max_injection_time': 'FANUCMoldingParameters.InjectionParameters.MaxInjectionTime',
+    'injection_cooling_time': 'FANUCMoldingParameters.ExtruderParameters.CoolTime',  # COOLING TIME
+    'injection_decompression_distance':'FANUCMoldingParameters.ExtruderParameters.Decompress.Position',
+    'injection_decompression_velocity':'FANUCMoldingParameters.ExtruderParameters.Decompress.Velocity' ,
+    'injection_shot_size':'FANUCMoldingParameters.ExtruderParameters.ScrewBack.Position',
+    'injection_hold_on_pressure':'FANUCMoldingParameters.PackParameters.Step_1.Pressure', # HOLD ON PRESSURE n
+    'injection_hold_on_time':'FANUCMoldingParameters.PackParameters.Step_1.Time',  #HOLD ON TIME n
+    'injection_velocity_1':'FANUCMoldingParameters.InjectionParameters.Step_1.Velocity',
+    'injection_velocity_2':'FANUCMoldingParameters.InjectionParameters.Step_2.Velocity',
+    'injection_velocity_3':'FANUCMoldingParameters.InjectionParameters.Step_3.Velocity',
+    'injection_upper_tol_set_value':'FANUCMoldingParameters.ProcessMonitor.InjectionTime.Upper',
+    'injection_lower_tol_set_value':'FANUCMoldingParameters.ProcessMonitor.InjectionTime.Lower',
+
 }
+
+# Folders whose contents are found by browsing each machine at every connect, because the
+# number of steps / zones and their child names come from the machine. Every variable below
+# them is subscribed and published under its dotted path, e.g.
+# "FANUCMoldingParameters.InjectionParameters.Step.Step_1.Velocity". A folder that is itself a
+# variable (e.g. an array of step structures) is published under the folder's path.
+BROWSE_ROOTS = [
+    'FANUCMoldingParameters.InjectionParameters.Step',
+    'InjectionUnits.InjectionUnit_1.TemperatureZones',
+    'FANUCMoldingParameters.InjectionParameters.Step_1.Velocity',
+    'FANUCMoldingParameters.InjectionParameters.Step_2.Velocity',
+    'FANUCMoldingParameters.InjectionParameters.Step_3.Velocity',    # INJCT VEL n, INJCT SW POS n
+    'FANUCMoldingParameters.PackParameters.Step',
+    'FANUCMoldingParameters.PackParameters.Step_1.Pressure', # HOLD ON PRESSURE n
+    'FANUCMoldingParameters.PackParameters.Step_1.Time',  #HOLD ON TIME n
+    'FANUCMoldingParameters.ExtruderParameters.Step',
+    'FANUCMoldingParameters.ExtruderParameters.Step_1.BackPressure',# BACK PRESSURE
+    'FANUCMoldingParameters.ExtruderParameters.Step_1.ScrewRotation',# ROTATION
+    'FANUCMoldingParameters.ExtruderParameters.Decompress.Position',
+    'FANUCMoldingParameters.ExtruderParameters.Decompress.Velocity' ,
+    'FANUCMoldingParameters.ExtruderParameters.ScrewBack.Position',  # DECOMPRESSION position, DECOMPRESSION VELOCITY
+    'FANUCMoldingParameters.ProcessMonitor.CushionStroke',  # M-CUSHION upper / lower monitor
+    'FANUCMoldingParameters.ProcessMonitor.InjectionTime',  # INJCT TIME upper / lower monitor
+     # which zones are present / feeding
+]
+BROWSE_SKIP = {'EURange', 'EngineeringUnits', 'InstrumentRange', 'ValuePrecision', 'EnumStrings', 'EnumValues', 'Definition','PowerUnits', 'NodeVersion'}
+BROWSE_DEPTH = 4  # levels below a root
+BROWSE_LIMIT = 400  # variables per root and machine, at most
+# Sub-units with their IsPresent flag and values (paths as seen on the gateway in nodes.uap);
+# the key is the EUROMAP path itself. Units a machine does not have read as not subscribed.
+# for _path in [
+#     'InjectionUnits.InjectionUnit_1.IsPresent',
+#     'InjectionUnits.InjectionUnit_1.InProduction',
+#     'InjectionUnits.InjectionUnit_1.BarrelId',
+#     'InjectionUnits.InjectionUnit_1.ScrewDiameter',
+#     'InjectionUnits.InjectionUnit_1.MaxScrewStroke',
+#     'Moulds.Mould_1.IsPresent',
+#     'Moulds.Mould_1.Id',
+#     'Moulds.Mould_1.Description',
+#     'Moulds.Mould_1.MouldStatus',
+# ] + [f'PowerUnits.PowerUnit_{_n}.{_v}' for _n in range(1, 8) for _v in ('IsPresent', 'Id', 'PowerOn')]:
+#     VARIABLES[_path] = _path
 NAME_KEY = 'machinename'
 
 
@@ -66,4 +124,12 @@ def cycle_event_fields(barrel_zones, mould_zones):
         fields.append((f'{EVENT}.MldCycParams_1.MldTmpZnCycParams_{n}.ActualTemperature', _MLD + [zone, (3, 'ActualTemperature')]))
     for path in (['Dryer', 'TemperatureTo'], ['Mold_1', 'TemperatureFrom'], ['Mold_1', 'TemperatureTo']):
         fields.append((f'{EVENT}.Peripheral.' + '.'.join(path), [(5, 'Peripheral')] + [(5, p) for p in path]))
+    # FANUC-native values (all FANUC namespace 5, paths as seen on the gateway in nodes.uap)
+    # for group, name in [
+    #     ('ParallelAndVariance', 'VPSwitchPosition'),  # POS TRANSFER
+    #     ('AV', 'MinimumCushion'),  # M-CUSHION ACTUAL
+    #     ('AV', 'PeakPressure'),  # PEAK PRESSURE
+    #     ('AV', 'RecoveryTime'),  # RCV TIME
+    # ]:
+        # fields.append((f'{EVENT}.{group}.{name}', [(5, group), (5, name)]))
     return fields

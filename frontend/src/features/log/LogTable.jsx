@@ -15,8 +15,9 @@ const HOUR_TEXT = {
 }
 
 // `onEdit` is set for a logged hour when the user may edit readings after they were submitted,
-// and for a missed hour when back-dated entries are allowed (Shift Master rules).
-function HourHead({ hour, state, initials, minutesToDue, onEdit }) {
+// for a missed hour when back-dated entries are allowed (Shift Master rules), and for an hour
+// only the machine (OPC UA) has filled, so a person can complete it.
+function HourHead({ hour, state, initials, minutesToDue, onEdit, auto }) {
   return (
     <th scope="col" className={`plog-table__hour is-${state}`}>
       {hourLabel(hour)}
@@ -26,9 +27,9 @@ function HourHead({ hour, state, initials, minutesToDue, onEdit }) {
           type="button"
           className="plog-table__edit mono"
           onClick={onEdit}
-          aria-label={`${state === 'missed' ? 'Add' : 'Edit'} the ${hourLabel(hour)} reading`}
+          aria-label={`${state === 'missed' ? 'Add' : auto ? 'Complete' : 'Edit'} the ${hourLabel(hour)} reading`}
         >
-          {state === 'missed' ? '+ Add' : '✎ Edit'}
+          {state === 'missed' ? '+ Add' : auto ? '+ Complete' : '✎ Edit'}
         </button>
       )}
     </th>
@@ -46,6 +47,9 @@ export default function LogTable({
   minutesToDue,
   onFocusDeviation,
   onEditHour,
+  isAutoHour = () => false,
+  isAutoValue = () => false,
+  machineLimitsAt = () => null,
 }) {
   const span = shiftTabs().find((t) => t.key === shift)?.span
   const total = allRows(sections).length
@@ -98,6 +102,7 @@ export default function LogTable({
                   hour={h}
                   state={hourState(h)}
                   initials={initials(h)}
+                  auto={isAutoHour(h)}
                   minutesToDue={minutesToDue}
                   onEdit={onEditHour?.(h) ? () => onEditHour(h)() : null}
                 />
@@ -146,8 +151,15 @@ export default function LogTable({
                       const value = valueAt(row, h, index)
                       const flag = isNumeric(row) && check(row, value)
                       const dev = flag && deviations.find((d) => d.hour === h && d.key === row.key)
+                      const auto = value != null && isAutoValue(row, h)
+                      // the machine's own monitor limits (shown only; the parameter master decides deviations)
+                      const ml = machineLimitsAt(row, h)
+                      const mlText = ml && `${ml.lower ?? '—'} – ${ml.upper ?? '—'}`
+                      const title = [auto && 'From the machine (OPC UA)', ml && `Machine monitor limits: ${mlText}`]
+                        .filter(Boolean)
+                        .join('\n')
                       return (
-                        <td key={h} className="num mono">
+                        <td key={h} className={`num mono${auto ? ' is-auto' : ''}`} title={title || undefined}>
                           {flag ? (
                             <button
                               type="button"
@@ -160,6 +172,7 @@ export default function LogTable({
                           ) : (
                             formatReading(row, value)
                           )}
+                          {ml && <span className="plog-table__mlim">M {mlText}</span>}
                         </td>
                       )
                     })}

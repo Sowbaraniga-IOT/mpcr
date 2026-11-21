@@ -20,8 +20,7 @@ urlpatterns = [
     path('parts/bulk/', masters.parts_bulk),
     path('molds/bulk/', masters.molds_bulk),
     # Shift master, users, roles
-    path('shift-master/', masters.shift_master),
-    path('users/', masters.users),
+    path('shift-master/', masters.shift_master),    path('users/', masters.users),
     path('users/<str:username>/', masters.user),
     path('roles/', masters.roles),
     # Parameter master

@@ -43,10 +43,19 @@ def main(argv=None):
     p.add_argument('--machines', help='machine numbers to collect, e.g. 1-131 or 1-10,15 (overrides OPCUA_MACHINES)')
     p.add_argument('--dry-run', action='store_true', help='print messages instead of publishing to MQTT')
     p.add_argument('--probe', metavar='MACHINES', help='read these machines once, print a table and exit, e.g. 1-5')
+    p.add_argument('--log-file', metavar='PATH', help='also log to this file, a new file each midnight, 14 days kept')
+    p.add_argument('--no-console', action='store_true', help='log only to --log-file (for the background service)')
     p.add_argument('-v', '--verbose', action='store_true')
     args = p.parse_args(argv)
 
-    logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO, format='%(asctime)s %(levelname)-7s %(name)s: %(message)s')
+    handlers = [] if args.no_console and args.log_file else [logging.StreamHandler()]
+    if args.log_file:
+        from logging.handlers import TimedRotatingFileHandler
+        from pathlib import Path
+
+        Path(args.log_file).parent.mkdir(parents=True, exist_ok=True)
+        handlers.append(TimedRotatingFileHandler(args.log_file, when='midnight', backupCount=14, encoding='utf-8'))
+    logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO, format='%(asctime)s %(levelname)-7s %(name)s: %(message)s', handlers=handlers)
     if not args.verbose:
         logging.getLogger('asyncua').setLevel(logging.WARNING)
     cfg, env_file = config.load(args.env)

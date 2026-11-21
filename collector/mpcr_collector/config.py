@@ -47,8 +47,9 @@ class Config:
     machines_per_session: int = 30
     sampling_ms: int = 250
     cycle_events: bool = True  # subscribe to ROBOSHOTCycleParametersEvent (cushion, injection time …)
-    barrel_zones: int = 6
+    barrel_zones: int = 11  # the ROBOSHOT reports up to 11 (nozzle included)
     mould_zones: int = 4
+    load_types: bool = True  # read the server's structure definitions (FANUC step records)
     reconnect_hours: float = 2.0
     retry_seconds: int = 20
     # MQTT
@@ -90,6 +91,7 @@ def load(env_file=None):
     c.cycle_events = get('OPCUA_CYCLE_EVENTS', '1') not in ('0', 'false', 'no', '')
     c.barrel_zones = int(get('OPCUA_BARREL_ZONES', c.barrel_zones))
     c.mould_zones = int(get('OPCUA_MOULD_ZONES', c.mould_zones))
+    c.load_types = get('OPCUA_LOAD_TYPES', '1') not in ('0', 'false', 'no', '')
     c.reconnect_hours = float(get('OPCUA_RECONNECT_HOURS', c.reconnect_hours))
     c.retry_seconds = int(get('OPCUA_RETRY_SECONDS', c.retry_seconds))
     c.mqtt_host = get('MQTT_HOST', c.mqtt_host)

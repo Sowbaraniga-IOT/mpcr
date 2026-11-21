@@ -139,6 +139,17 @@
   color: var(--muted);
   text-align: right;
 }
+/* a value the machine reported itself (OPC UA) */
+.record-field__auto {
+  margin-left: 6px;
+  padding: 1px 4px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted);
+  vertical-align: 1px;
+}
 .record-field.is-limit input {
   border-color: var(--accent);
   background: var(--accent-soft);

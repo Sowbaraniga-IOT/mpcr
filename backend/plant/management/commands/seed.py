@@ -24,8 +24,10 @@ from plant.models import (
     Role,
     Setting,
     Shift,
+    ShiftMaster,
     User,
 )
+from plant.services.shift_master import save_times
 
 FIXTURE = Path(__file__).resolve().parents[2] / 'fixtures' / 'seed.json'
 
@@ -43,7 +45,7 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, reset=False, **kw):
         if reset:
-            for model in [Notification, ParameterLog, RecipeVersion, Recipe, MachineImage, Machine, Mold, Part, Shift, Setting, Role, AuditEntry]:
+            for model in [Notification, ParameterLog, RecipeVersion, Recipe, MachineImage, Machine, Mold, Part, Shift, ShiftMaster, Setting, Role, AuditEntry]:
                 model.objects.all().delete()
             User.objects.all().delete()
         elif Machine.objects.exists():
@@ -95,6 +97,7 @@ class Command(BaseCommand):
         sm = seed['shiftMaster']
         for i, s in enumerate(sm['shifts']):
             Shift.objects.create(position=i, **{f: s[f] for f in Shift.FIELDS})
+            save_times(s['code'], s['start'], s['end'], s.get('unitCode', ''))  # the times go into Shift_Master
         Setting.put('shiftRules', sm['rules'])
 
         for r in seed['recipes']:

@@ -132,8 +132,11 @@ function ExportMenu({ onExport }) {
   )
 }
 
+// recordedBy of readings the machine reported itself (backend: logic.AUTO_RECORDER).
+const AUTO_RECORDER = 'opc-ua'
+
 // Who recorded an hour, as the column header shows it: "operator" → "OP"; automatic readings → "AUTO".
-const initialsOf = (by) => (!by ? '' : by === 'opc-ua' ? 'AUTO' : by.slice(0, 2).toUpperCase())
+const initialsOf = (by) => (!by ? '' : by === AUTO_RECORDER ? 'AUTO' : by.slice(0, 2).toUpperCase())
 
 export default function ParameterLog({ machine, user }) {
   const now = useNow()
@@ -177,12 +180,20 @@ export default function ParameterLog({ machine, user }) {
   const masterRef = recipeRef(machine)
   const [focusId, setFocusId] = useState(null)
 
+  // An hour only the machine (OPC UA) has filled is still open for a person to complete:
+  // the readings the gateway doesn't send are added by hand, the machine's values are kept.
+  const isAutoHour = (h) => Boolean(log.recorded[h]) && log.recordedBy?.[h]?.by === AUTO_RECORDER
+  const isAutoValue = (row, h) => (log.recordedBy?.[h]?.auto ?? []).includes(row.key)
+  const machineLimitsAt = (row, h) => log.recordedBy?.[h]?.machineLimits?.[row.key] ?? null
+  const byPerson = Object.fromEntries(Object.entries(log.recorded).filter(([h]) => !isAutoHour(h)))
+
   // The Shift Master decides when readings are due.
-  const dueHour = dueSlot(log.recorded, now)
+  const dueHour = dueSlot(byPerson, now)
   const minutesToDue = dueHour == null ? 0 : Math.round((dueHour - nowAt) * 60)
   const hours = sheetHours(shift, log.recorded)
   const shiftDevs = log.deviations.filter((d) => hours.includes(d.hour))
-  const dueRecorded = dueHour != null && Boolean(log.recorded[dueHour])
+  const dueRecorded = dueHour != null && Boolean(byPerson[dueHour])
+  const dueAuto = dueHour != null && isAutoHour(dueHour)
 
   // Past hours nobody recorded are "missed"; with back-dated entries allowed they can still be added.
   function hourState(h) {
@@ -203,6 +214,8 @@ export default function ParameterLog({ machine, user }) {
   const canBackfill = canRecord && SHIFT_MASTER.rules.backDated
   function editAction(h) {
     const state = hourState(h)
+    if (isAutoHour(h) && canRecord && (h === dueHour || canBackfill))
+      return () => setDialog({ type: 'complete', hour: h })
     if ((state === 'logged' && canEdit) || (state === 'missed' && canBackfill))
       return () => setDialog({ type: 'edit', hour: h })
     return null
@@ -325,7 +338,7 @@ export default function ParameterLog({ machine, user }) {
           <button
             type="button"
             className="plog__btn plog__btn--primary mono"
-            onClick={() => setDialog({ type: 'record' })}
+            onClick={() => setDialog(dueAuto ? { type: 'complete', hour: dueHour } : { type: 'record' })}
             hidden={!canRecord}
             disabled={dueRecorded || dueHour == null}
           >
@@ -333,7 +346,9 @@ export default function ParameterLog({ machine, user }) {
               ? 'No reading due'
               : dueRecorded
                 ? `✓ ${hourLabel(dueHour)} recorded`
-                : `+ Record ${hourLabel(dueHour)}`}
+                : dueAuto
+                  ? `+ Complete ${hourLabel(dueHour)}`
+                  : `+ Record ${hourLabel(dueHour)}`}
           </button>
         </div>
       </div>
@@ -356,6 +371,9 @@ export default function ParameterLog({ machine, user }) {
           minutesToDue={minutesToDue}
           onFocusDeviation={setFocusId}
           onEditHour={editAction}
+          isAutoHour={isAutoHour}
+          isAutoValue={isAutoValue}
+          machineLimitsAt={machineLimitsAt}
         />
 
         <aside className="plog__side">
@@ -367,7 +385,9 @@ export default function ParameterLog({ machine, user }) {
                 <span className={dueRecorded ? 'is-done' : 'is-due'}>
                   {dueRecorded
                     ? 'Recorded ✓'
-                    : dueHour == null
+                    : dueAuto
+                      ? 'Machine values in · complete the rest'
+                      : dueHour == null
                       ? 'No reading due'
                       : minutesToDue > 0
                         ? `Due in ${minutesToDue} min`
@@ -423,6 +443,17 @@ export default function ParameterLog({ machine, user }) {
           hour={dialog.hour}
           sections={sections}
           current={log.recorded[dialog.hour] && Object.fromEntries(rows.map((r) => [r.key, valueAt(r, dialog.hour)]))}
+          onSave={(values) => handleEdit(dialog.hour, values)}
+          onClose={() => setDialog(null)}
+        />
+      )}
+      {dialog?.type === 'complete' && (
+        <RecordDialog
+          machine={machine}
+          hour={dialog.hour}
+          sections={sections}
+          prefill={log.recorded[dialog.hour]}
+          autoKeys={log.recordedBy?.[dialog.hour]?.auto ?? []}
           onSave={(values) => handleEdit(dialog.hour, values)}
           onClose={() => setDialog(null)}
         />

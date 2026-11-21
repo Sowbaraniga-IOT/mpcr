@@ -17,7 +17,11 @@ import { logChange } from '../../store/store.js'
 
 const TONES = { A: 'accent', B: 'ink', C: 'grey' }
 const toneOf = (code) => TONES[code] ?? 'maint'
-const hoursText = (s) => `${+(durationOf(s) / 60).toFixed(1)} h`
+// Shift length as "HH:MM", the same text as Shift_Master.time_diff.
+const timeDiffOf = (s) => {
+  const m = durationOf(s)
+  return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
+}
 const userName = (username) => USERS.find((u) => u.username === username)?.name ?? username ?? '—'
 
 // 24-hour bar: each active shift as a block; one that runs past midnight is drawn in two parts.
@@ -64,7 +68,7 @@ const RULES = [
   { key: 'backDated', title: 'Allow back-dated entry', sub: () => 'Supervisor can fill a missed slot with a reason' },
 ]
 
-const EMPTY = { code: '', name: '', start: 480, end: 960, interval: 60, grace: 10, supervisor: '', active: true }
+const EMPTY = { code: '', unitCode: '', name: '', start: 480, end: 960, interval: 60, grace: 10, supervisor: '', active: true }
 
 export default function ShiftMaster({ user, canEdit }) {
   const [, setVersion] = useState(0)
@@ -92,7 +96,7 @@ export default function ShiftMaster({ user, canEdit }) {
 
   function validate(e) {
     const found = {}
-    if (!/^[A-Z0-9]{1,3}$/.test(e.code)) found.code = '1–3 letters or digits, e.g. A'
+    if (!/^[A-Z0-9]$/.test(e.code)) found.code = 'One letter or digit, e.g. A'
     else if (shifts.some((s) => s.code === e.code && s.code !== e.original)) found.code = `Shift ${e.code} already exists`
     if (!e.name.trim()) found.name = 'Give the shift a name'
     if (e.start === e.end) found.end = 'End must differ from start'
@@ -166,10 +170,11 @@ export default function ShiftMaster({ user, canEdit }) {
             <thead className="mono">
               <tr>
                 <th>Code</th>
+                <th>Unit</th>
                 <th>Name</th>
                 <th>Start</th>
                 <th>End</th>
-                <th>Hours</th>
+                <th>Time diff</th>
                 <th>Readings</th>
                 <th>Interval</th>
                 <th>Supervisor</th>
@@ -185,12 +190,13 @@ export default function ShiftMaster({ user, canEdit }) {
                   <td>
                     <span className={`scode sbadge--${toneOf(s.code) === 'maint' ? 'muted' : toneOf(s.code)}`}>{s.code}</span>
                   </td>
+                  <td className="mono">{s.unitCode || '—'}</td>
                   <td className="stable__strong">{s.name}</td>
                   <td className="mono">{toClock(s.start)}</td>
                   <td className="mono">
                     {toClock(s.end)} {crossesMidnight(s) && <span className="stable__muted">+1</span>}
                   </td>
-                  <td className="mono">{hoursText(s)}</td>
+                  <td className="mono">{timeDiffOf(s)}</td>
                   <td className="mono">{s.active ? slotsOf(s).length : '—'}</td>
                   <td className="mono">{s.active ? `${s.interval} min` : '—'}</td>
                   <td>{userName(s.supervisor)}</td>
@@ -238,7 +244,12 @@ export default function ShiftMaster({ user, canEdit }) {
         <div className="spanel__row">
           <Field label="Shift code" error={errors.code}>
             {(id) => (
-              <input id={id} value={editing.code} maxLength={3} disabled={!canEdit} onChange={(e) => set('code')(e.target.value.toUpperCase())} />
+              <input id={id} value={editing.code} maxLength={1} disabled={!canEdit} onChange={(e) => set('code')(e.target.value.toUpperCase())} />
+            )}
+          </Field>
+          <Field label="Unit code" error={errors.unitCode}>
+            {(id) => (
+              <input id={id} value={editing.unitCode ?? ''} maxLength={10} placeholder="e.g. SML" disabled={!canEdit} onChange={(e) => set('unitCode')(e.target.value.toUpperCase())} />
             )}
           </Field>
         </div>

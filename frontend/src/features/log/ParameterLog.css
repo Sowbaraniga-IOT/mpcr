@@ -8,6 +8,20 @@
   min-width: 0;
 }
 
+/* a reading the machine reported itself (OPC UA) */
+.plog-table td.is-auto {
+  text-decoration: underline dotted var(--muted);
+  text-underline-offset: 3px;
+}
+/* the machine's own monitor limits under a reading (shown only) */
+.plog-table__mlim {
+  display: block;
+  font-size: 9px;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
 /* ---------- Info strip, shift tabs, actions ---------- */
 .plog__top {
   display: flex;

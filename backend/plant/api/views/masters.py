@@ -12,6 +12,7 @@ from rest_framework.decorators import api_view
 from integrations.fanuc.euromap77 import from_euromap
 
 from ...services import logic, params
+from ...services import shift_master as shift_times
 from ..authentication import end_sessions
 from ...services.logic import Refused
 from ...models import (
@@ -249,8 +250,8 @@ def clean_shift_master(data):
             raise Refused(f'Shift {n} must be an object')
         code = str(s.get('code') or '').strip().upper()
         where = f'Shift {code or n}'
-        if not re.fullmatch(r'[A-Z0-9]{1,4}', code):
-            raise Refused(f'{where}: code must be 1–4 letters or digits, e.g. "A"')
+        if not re.fullmatch(r'[A-Z0-9]', code):
+            raise Refused(f'{where}: code must be one letter or digit, e.g. "A" (Shift_Master.Shift_Code)')
         if code in codes:
             raise Refused(f'{where}: the code is used twice')
         codes.add(code)
@@ -272,7 +273,10 @@ def clean_shift_master(data):
         supervisor = str(s.get('supervisor') or '')
         if supervisor and not User.objects.filter(username=supervisor).exists():
             raise Refused(f'{where}: supervisor {supervisor} is not a user')
-        out.append({'code': code, 'name': name, 'start': s['start'], 'end': s['end'], 'interval': interval, 'grace': grace, 'supervisor': supervisor, 'active': s.get('active', True)})
+        unit_code = str(s.get('unitCode') or '').strip()
+        if len(unit_code) > 10:
+            raise Refused(f'{where}: unit code is up to 10 characters')
+        out.append({'code': code, 'name': name, 'unit_code': unit_code, 'start': s['start'], 'end': s['end'], 'interval': interval, 'grace': grace, 'supervisor': supervisor, 'active': s.get('active', True)})
     clean_rules = {}
     for k, v in rules.items():
         if k in RULE_FLAGS:
@@ -293,8 +297,12 @@ def shift_master(request):
         require(request.user, 'shiftMaster')
         shifts, rules = clean_shift_master(body(request))
         with transaction.atomic():
-            Shift.objects.exclude(code__in=[s['code'] for s in shifts]).delete()
+            codes = [s['code'] for s in shifts]
+            Shift.objects.exclude(code__in=codes).delete()
+            shift_times.keep_only(codes)
             for i, s in enumerate(shifts):
+                # Times → Shift_Master; reading settings → Shift (start/end kept there as a copy).
+                shift_times.save_times(s['code'], s['start'], s['end'], s['unit_code'])
                 Shift.objects.update_or_create(code=s['code'], defaults={**{f: s[f] for f in Shift.FIELDS if f != 'code'}, 'position': i})
             Setting.put('shiftRules', rules)
     return ok(shift_master_doc())

@@ -11,9 +11,10 @@ function initialValues(sections, current) {
   )
 }
 
-// `current` is set when editing an hour that was already submitted.
-export default function RecordDialog({ machine, hour, sections, current, onSave, onClose }) {
-  const [values, setValues] = useState(() => initialValues(sections, current))
+// `current` is set when editing an hour that was already submitted; `prefill` and `autoKeys`
+// when completing an hour the machine (OPC UA) has filled: its values start in, marked AUTO.
+export default function RecordDialog({ machine, hour, sections, current, prefill, autoKeys = [], onSave, onClose }) {
+  const [values, setValues] = useState(() => initialValues(sections, current ?? prefill))
 
   const parsed = (row) => (isNumeric(row) && values[row.key] !== '' ? Number(values[row.key]) : values[row.key])
   const flagged = sections.flatMap((s) => s.rows).filter((r) => check(r, parsed(r)))
@@ -28,7 +29,7 @@ export default function RecordDialog({ machine, hour, sections, current, onSave,
 
   return (
     <LogDialog
-      title={`${current ? 'Edit' : 'Record'} ${hourLabel(hour)} reading · ${machine.name} · ${machine.id}`}
+      title={`${current ? 'Edit' : prefill ? 'Complete' : 'Record'} ${hourLabel(hour)} reading · ${machine.name} · ${machine.id}`}
       submitLabel={
         flagged.length ? `Save · ${flagged.length} deviation${flagged.length > 1 ? 's' : ''}` : 'Save reading'
       }
@@ -39,7 +40,9 @@ export default function RecordDialog({ machine, hour, sections, current, onSave,
       <p className="log-dialog__hint">
         {current
           ? 'Editing a submitted reading. Changes go to the audit trail; a new value outside its limits opens a new deviation.'
-          : 'Values start at the standard. Anything outside its limits is saved as an open deviation that needs a reason.'}
+          : prefill
+            ? 'Values marked AUTO came from the machine (OPC UA). Fill in the rest, which start at the standard; anything outside its limits needs a reason.'
+            : 'Values start at the standard. Anything outside its limits is saved as an open deviation that needs a reason.'}
       </p>
 
       {sections.map((section) => (
@@ -54,7 +57,10 @@ export default function RecordDialog({ machine, hour, sections, current, onSave,
                   key={row.key}
                   className={`record-field ${flag ? `is-${row.zeroTol ? 'changed' : 'limit'}` : ''}`}
                 >
-                  <span className="record-field__label">{row.label}</span>
+                  <span className="record-field__label">
+                    {row.label}
+                    {autoKeys.includes(row.key) && <span className="record-field__auto mono">AUTO</span>}
+                  </span>
                   <span className="record-field__input">
                     <input
                       type={isNumeric(row) ? 'number' : 'text'}

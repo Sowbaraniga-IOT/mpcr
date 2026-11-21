@@ -17,7 +17,6 @@ from ..models import (
     Recipe,
     Role,
     Setting,
-    Shift,
     User,
     slot_key,
     slot_label,
@@ -85,7 +84,10 @@ def shift_rules():
 
 
 def active_shifts():
-    return list(Shift.objects.filter(active=True))
+    """The shifts readings are due in, with their times from Shift_Master."""
+    from .shift_master import with_master_times
+
+    return with_master_times(active_only=True)
 
 
 def duration_of(shift):
@@ -284,6 +286,7 @@ def clean_values(rows, values):
 
 
 CLOCK_TOLERANCE_MINUTES = 2  # a PC's clock may differ a little from the server's
+AUTO_RECORDER = 'opc-ua'  # recorded_by of readings the machine reported itself
 
 
 def check_entry_time(date, hour, already_recorded):
@@ -314,21 +317,28 @@ def check_entry_time(date, hour, already_recorded):
 def record_hour(machine, date, hour, values, user=None, edit=False):
     """Save one hour's readings. A first save needs 'record'; a change to a saved hour needs
     'editAfterSubmit'. Deviations whose value didn't change keep their reason and approvals;
-    a value outside its limits starts a new open deviation."""
+    a value outside its limits starts a new open deviation.
+
+    Without a user the readings come from the machine (OPC UA). A slot only the machine has
+    filled still counts as open for a person: their first save needs only 'record', and the
+    machine's values they didn't send are kept."""
     if not 6 <= hour < 30:
         raise Refused('Reading times run 06:00 → 06:00 (6 … below 30)')
     log = ParameterLog.objects.select_for_update().get(pk=log_for(machine, date).pk)
     key = slot_key(hour)
+    before = log.recorded.get(key, {})
+    auto_only = key in log.recorded and log.recorded_by.get(key, {}).get('by') == AUTO_RECORDER
     if user:
-        already = key in log.recorded
+        already = key in log.recorded and not auto_only
         if already and not can(user, 'editAfterSubmit'):
             raise Refused(f'{slot_label(hour)} is already recorded. Editing needs “Edit after submit”.', 403)
         if not already and not can(user, 'record'):
             raise Refused('Your role may not record readings.', 403)
         check_entry_time(date, hour, already)
+        if auto_only:
+            values = {**before, **values}
     rows = rows_for(machine)
     clean = clean_values(rows, values)
-    before = log.recorded.get(key, {})
 
     existing = {d.key: d for d in log.deviations.filter(hour=hour)}
     found = []
@@ -343,11 +353,21 @@ def record_hour(machine, date, hour, values, user=None, edit=False):
             found.append((Deviation.objects.create(log=log, hour=hour, key=row['key'], value=v), row))
 
     log.recorded[key] = clean
-    log.recorded_by[key] = {'by': name_of(user) if user else 'opc-ua', 'at': clock()}
+    if user:
+        # values still exactly as the machine reported them stay marked as automatic
+        prev = log.recorded_by.get(key, {})
+        auto = [k for k in (prev.get('auto') or []) if auto_only and k in clean and clean[k] == before.get(k)]
+        kept = {'machineLimits': prev['machineLimits']} if 'machineLimits' in prev else {}
+        log.recorded_by[key] = {'by': name_of(user), 'at': clock(), **({'auto': auto} if auto else {}), **kept}
+    else:
+        log.recorded_by[key] = {'by': AUTO_RECORDER, 'at': clock(), 'auto': sorted(clean)}
     log.save()
     for d, row in found:
         notify('detected', log, d, row, actor=user)
-    changed = [r for r in rows if not r.get('na') and str(before.get(r['key'])) != str(clean.get(r['key']))] if before else []
+    if auto_only:  # completing the machine's reading: only a changed machine value is an edit
+        changed = [r for r in rows if not r.get('na') and r['key'] in before and str(before[r['key']]) != str(clean.get(r['key']))]
+    else:
+        changed = [r for r in rows if not r.get('na') and str(before.get(r['key'])) != str(clean.get(r['key']))] if before else []
     return log, changed, before
 
 

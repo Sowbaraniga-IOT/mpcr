@@ -179,10 +179,21 @@ CREATE TABLE IF NOT EXISTS mold_machines (
     PRIMARY KEY (mold_no, machine_id)
 );
 
--- 2.9 Shifts Catalog
+-- 2.9 Shift Master: the shift timings (the same table the production logger uses)
+-- Only the time of day of start_tm / end_tm counts; end_tm at or before start_tm runs past midnight.
+
+CREATE TABLE IF NOT EXISTS "Shift_Master" (
+    "Unit_code" VARCHAR(10) NOT NULL, -- e.g. 'SML'
+    "Shift_Code" VARCHAR(1) PRIMARY KEY, -- 'A', 'B', 'C', 'G'
+    "start_tm" TIMESTAMPTZ NOT NULL,
+    "end_tm" TIMESTAMPTZ NOT NULL,
+    "time_diff" VARCHAR(5) NOT NULL -- shift length 'HH:MM', e.g. '08:00'
+);
+
+-- 2.9b Shifts: MPCR's reading settings per shift (times copied from "Shift_Master", matched on code)
 
 CREATE TABLE IF NOT EXISTS shifts (
-    code CHAR(1) PRIMARY KEY, -- 'A', 'B', 'C', 'G'
+    code CHAR(1) PRIMARY KEY REFERENCES "Shift_Master"("Shift_Code") ON DELETE CASCADE, -- 'A', 'B', 'C', 'G'
     name VARCHAR(50) NOT NULL, -- 'Morning', 'Afternoon', 'Night', 'General'
     start_minute INT NOT NULL CHECK (start_minute >= 0 AND start_minute < 1440), -- Minutes from midnight (360 = 06:00)
     end_minute INT NOT NULL CHECK (end_minute >= 0 AND end_minute < 1440), -- (840 = 14:00)

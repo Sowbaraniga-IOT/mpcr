@@ -23,6 +23,7 @@ TRUNCATE TABLE
     parts,
     shift_rules,
     shifts,
+    "Shift_Master",
     role_permissions,
     user_machine_access,
     permissions,
@@ -117,6 +118,12 @@ INSERT INTO users (username, name, email, employee_id, role, shift_code, access_
 -- ==============================================================================
 -- 3. SHIFTS & SHIFT RULES
 -- ==============================================================================
+
+INSERT INTO "Shift_Master" ("Unit_code", "Shift_Code", "start_tm", "end_tm", "time_diff") VALUES
+('SML', 'A', '2000-01-01 06:00:00+05:30', '2000-01-01 14:00:00+05:30', '08:00'),
+('SML', 'B', '2000-01-01 14:00:00+05:30', '2000-01-01 22:00:00+05:30', '08:00'),
+('SML', 'C', '2000-01-01 22:00:00+05:30', '2000-01-01 06:00:00+05:30', '08:00'),
+('SML', 'G', '2000-01-01 09:00:00+05:30', '2000-01-01 17:30:00+05:30', '08:30');
 
 INSERT INTO shifts (code, name, start_minute, end_minute, interval_minutes, grace_minutes, supervisor_username, active) VALUES
 ('A', 'Morning', 360, 840, 60, 10, 'supervisor', TRUE),

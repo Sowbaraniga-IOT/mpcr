@@ -7,7 +7,9 @@ import { api, save } from '../api/client.js'
 export const INTERVALS = [30, 60, 120, 240]
 export const GRACE_OPTIONS = [0, 5, 10, 15, 30]
 
-// { shifts: [{ code, name, start, end, interval, grace, supervisor, active }], rules: { … } }
+// { shifts: [{ code, unitCode, name, start, end, interval, grace, supervisor, active, timeDiff }], rules: { … } }
+// code / unitCode / start / end / timeDiff are the Shift_Master table (Shift_Code, Unit_code, start_tm,
+// end_tm, time_diff) on the server; the rest are MPCR's reading settings for that shift.
 export const SHIFT_MASTER = { shifts: [], rules: {} }
 export const hydrateShiftMaster = (doc) => replaceAll(SHIFT_MASTER, structuredClone(doc))
 export const saveShiftMaster = () => save(api.put('/shift-master/', SHIFT_MASTER))

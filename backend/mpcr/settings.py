@@ -119,6 +119,9 @@ else:
         }
     }
 
+# Plant unit (Shift_Master.Unit_code) given to shifts entered without one.
+PLANT_UNIT_CODE = env('PLANT_UNIT_CODE', 'SML')
+
 AUTH_USER_MODEL = 'plant.User'
 AUTH_PASSWORD_VALIDATORS = [{'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', 'OPTIONS': {'min_length': 6}}]
 
@@ -172,3 +175,5 @@ FANUC_MQTT_USER = env('FANUC_MQTT_USER', '')
 FANUC_MQTT_PASSWORD = env('FANUC_MQTT_PASSWORD', '')
 # Collector machine names that don't match an MPCR id apart from punctuation: "J1030=J10-30,…"
 FANUC_MACHINE_MAP = env('FANUC_MACHINE_MAP', '')
+# Fill the parameter sheet of "Auto (OPC UA)" machines at each reading time from the collector's values
+FANUC_AUTO_LOG = env('FANUC_AUTO_LOG', '1').lower() not in ('0', 'false', 'no', 'off', '')

@@ -144,7 +144,9 @@ def matrix_doc():
 
 
 def shift_master_doc():
-    return {'shifts': [s.to_dict() for s in Shift.objects.all()], 'rules': Setting.get('shiftRules', {})}
+    from ...services.shift_master import with_master_times
+
+    return {'shifts': [s.to_dict() for s in with_master_times()], 'rules': Setting.get('shiftRules', {})}
 
 
 @api_view(['GET'])

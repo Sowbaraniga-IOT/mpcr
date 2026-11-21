@@ -3,6 +3,7 @@ from io import StringIO
 from django.core.management import call_command
 from django.utils import timezone
 from ..services import logic
+from ..services.shift_master import save_times
 from ..models import Machine, Notification, ParameterLog, Setting, Shift, User
 from .base import PlantTestCase, plant_time
 
@@ -159,6 +160,9 @@ class LogsTests(PlantTestCase):
 
     def set_shift(self, code, **fields):
         Shift.objects.filter(code=code).update(**fields)
+        if 'start' in fields or 'end' in fields:  # the times that count are in Shift_Master
+            s = Shift.objects.get(code=code)
+            save_times(code, s.start, s.end)
 
     def test_interval_changes_the_reading_times(self):
         self.set_clock(plant_time(3, 10, 20))

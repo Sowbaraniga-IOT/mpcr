@@ -15,6 +15,10 @@ from asyncua import Server, ua
 
 MACHINES = {'IMM_FANUC_ROBOSHOT0001': 'J1025', 'IMM_FANUC_ROBOSHOT0002': 'J1026', 'IMM_FANUC_ROBOSHOT0003': ''}
 NS = 6
+# zone → (IsPresent, IsFeedingZone, NominalTemperature); the child names are this simulator's guess
+TEMPERATURE_ZONES = {1: (True, False, 255.0), 2: (True, False, 255.0), 3: (True, False, 250.0), 4: (True, False, 245.0), 5: (False, False, 0.0), 6: (True, True, 55.0)}
+INJECTION_STEPS = {1: (True, 60.0, 20.0), 2: (True, 40.0, 10.0), 3: (False, 0.0, 0.0)}  # step → (IsPresent, Velocity, Position)
+PACK_STEPS = {1: (True, 55.0, 3.0), 2: (True, 50.0, 2.0), 3: (False, 0.0, 0.0)}  # step → (IsPresent, Pressure, Time)
 
 
 async def main(port=4841):
@@ -32,9 +36,18 @@ async def main(port=4841):
     for node_name, user_name in MACHINES.items():
         obj = await objects.add_object(ua.NodeId(node_name, NS), ua.QualifiedName(node_name, NS))
         v = {}
+        folders = {'': obj}
 
-        async def var(path, value, vtype, obj=obj, node_name=node_name, v=v):
-            v[path] = await obj.add_variable(ua.NodeId(f'{node_name}.{path}', NS), ua.QualifiedName(path.rsplit('.', 1)[-1], 3), ua.Variant(value, vtype))
+        async def folder(path, node_name=node_name, folders=folders):
+            """The object at a dotted path below the machine, created (with its parents) on first use."""
+            if path not in folders:
+                parent, _, name = path.rpartition('.')
+                folders[path] = await (await folder(parent)).add_object(ua.NodeId(f'{node_name}.{path}', NS), ua.QualifiedName(name, 5))
+            return folders[path]
+
+        async def var(path, value, vtype, node_name=node_name, v=v):
+            parent, _, name = path.rpartition('.')
+            v[path] = await (await folder(parent)).add_variable(ua.NodeId(f'{node_name}.{path}', NS), ua.QualifiedName(name, 3), ua.Variant(value, vtype))
 
         await var('MachineConfiguration.UserMachineName', user_name, ua.VariantType.String)
         await var('MachineStatus.MachineMode', 1 if user_name else 0, ua.VariantType.Int32)
@@ -44,8 +57,30 @@ async def main(port=4841):
         await var('Jobs.ActiveJobValues.JobCycleCounter', 500, ua.VariantType.UInt64)
         await var('Jobs.ActiveJobValues.MachineCycleCounter', 14250, ua.VariantType.UInt64)
         await var('Jobs.ActiveJobValues.LastCycleTime', 26150.0, ua.VariantType.Double)
-        for n in range(1, 4):
-            await var(f'InjectionUnits.InjectionUnit_1.TemperatureZones.TemperatureZone_{n}.NominalTemperature', 255.0 - 5 * (n - 1), ua.VariantType.Double)
+        # Barrel zones: 1 nozzle, 2-4 heater bands, 5 not fitted, 6 the feed throat
+        zones = TEMPERATURE_ZONES
+        for n, (present, feeding, nominal) in zones.items():
+            z = f'InjectionUnits.InjectionUnit_1.TemperatureZones.TemperatureZone_{n}'
+            await var(f'{z}.IsPresent', present, ua.VariantType.Boolean)
+            await var(f'{z}.IsFeedingZone', feeding, ua.VariantType.Boolean)
+            await var(f'{z}.NominalTemperature', nominal, ua.VariantType.Double)
+        # FANUC steps: 3 injection steps (step 3 switched off), 2 hold steps, 1 recovery step
+        for n, (present, velocity, position) in INJECTION_STEPS.items():
+            s = f'FANUCMoldingParameters.InjectionParameters.Step.Step_{n}'
+            await var(f'{s}.IsPresent', present, ua.VariantType.Boolean)
+            await var(f'{s}.Velocity', velocity, ua.VariantType.Double)
+            await var(f'{s}.Position', position, ua.VariantType.Double)
+        for n, (present, pressure, hold) in PACK_STEPS.items():
+            s = f'FANUCMoldingParameters.PackParameters.Step.Step_{n}'
+            await var(f'{s}.IsPresent', present, ua.VariantType.Boolean)
+            await var(f'{s}.Pressure', pressure, ua.VariantType.Double)
+            await var(f'{s}.Time', hold, ua.VariantType.Double)
+        await var('FANUCMoldingParameters.ExtruderParameters.Step.Step_1.IsPresent', True, ua.VariantType.Boolean)
+        await var('FANUCMoldingParameters.ExtruderParameters.Step.Step_1.Position', 39.8, ua.VariantType.Double)
+        await var('FANUCMoldingParameters.ExtruderParameters.Decompression.Position', 5.0, ua.VariantType.Double)
+        await var('FANUCMoldingParameters.ExtruderParameters.Decompression.Velocity', 5.0, ua.VariantType.Double)
+        await var('FANUCMoldingParameters.ProcessMonitor.CushionStroke.Upper', 4.7, ua.VariantType.Double)
+        await var('FANUCMoldingParameters.ProcessMonitor.CushionStroke.Lower', 2.7, ua.VariantType.Double)
         gen = await server.get_event_generator(evtype, obj)
         machines[node_name] = (v, gen, user_name)
 

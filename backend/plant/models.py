@@ -228,11 +228,35 @@ class Mold(models.Model):
 # ---------- Shift master ----------
 
 
+class ShiftMaster(models.Model):
+    """The plant's shift timings: Unit_code, Shift_Code, start_tm, end_tm, time_diff.
+
+    This is where the times of a shift live. Only the time of day of start_tm / end_tm counts; an end_tm
+    at or before start_tm runs past midnight. time_diff is the length as "HH:MM" (e.g. "08:00").
+    MPCR's reading settings for the same shift (name, interval, grace, supervisor, on/off) are in Shift,
+    matched on the shift code; services/shift_master.py puts the two together."""
+
+    Unit_code = models.CharField(max_length=10, db_column='Unit_code')
+    Shift_Code = models.CharField(max_length=1, db_column='Shift_Code', primary_key=True)
+    start_tm = models.DateTimeField(db_column='start_tm')
+    end_tm = models.DateTimeField(db_column='end_tm')
+    time_diff = models.CharField(max_length=5, db_column='time_diff')
+
+    class Meta:
+        db_table = 'Shift_Master'
+        ordering = ['Shift_Code']
+
+    def __str__(self):
+        return f'{self.Unit_code} {self.Shift_Code} {self.time_diff}'
+
+
 class Shift(models.Model):
-    """Times are minutes after midnight; an end at or before the start runs past midnight."""
+    """MPCR's reading settings for one shift. The start and end times come from ShiftMaster (start/end
+    here are kept as a copy, in minutes after midnight); an end at or before the start runs past midnight."""
 
     code = models.CharField(max_length=4, primary_key=True)
     position = models.PositiveIntegerField(default=0)
+    unit_code = ''  # not stored here: filled in from ShiftMaster.Unit_code
     name = models.CharField(max_length=40)
     start = models.PositiveIntegerField()
     end = models.PositiveIntegerField()
@@ -246,8 +270,14 @@ class Shift(models.Model):
 
     FIELDS = ['code', 'name', 'start', 'end', 'interval', 'grace', 'supervisor', 'active']
 
+    @property
+    def time_diff(self):
+        """Length of the shift as "HH:MM", the text kept in Shift_Master.time_diff (e.g. "08:00")."""
+        minutes = (self.end - self.start) % (24 * 60) or 24 * 60
+        return f'{minutes // 60:02d}:{minutes % 60:02d}'
+
     def to_dict(self):
-        return {f: getattr(self, f) for f in self.FIELDS}
+        return {**{f: getattr(self, f) for f in self.FIELDS}, 'unitCode': self.unit_code, 'timeDiff': self.time_diff}
 
 
 class Setting(models.Model):

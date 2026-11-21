@@ -3,8 +3,11 @@
     python manage.py euromap_bridge                       # broker and topic from settings / .env
     python manage.py euromap_bridge --host 10.245.x.x --topic factory/euromap77/raw
     python manage.py euromap_bridge --verbose              # print every update
+    python manage.py euromap_bridge --no-auto-log          # live values only, don't fill the parameter sheet
 
 The collector (OPC UA → MQTT) owns the connection to the FANUC gateway; this only subscribes.
+For machines whose data source is "Auto (OPC UA)" it also records each reading time of the
+parameter sheet from the collector's values (FANUC_AUTO_LOG=0 in .env switches that off).
 """
 import json
 import time
@@ -15,6 +18,7 @@ from django.core.management.base import BaseCommand
 from django.db import close_old_connections
 
 from integrations.fanuc.bridge import Bridge
+from plant.models import slot_label
 
 
 class Command(BaseCommand):
@@ -27,11 +31,13 @@ class Command(BaseCommand):
         parser.add_argument('-u', '--user', default=settings.FANUC_MQTT_USER or None)
         parser.add_argument('-p', '--password', default=settings.FANUC_MQTT_PASSWORD or None)
         parser.add_argument('--verbose', action='store_true', help='Print every machine update')
+        parser.add_argument('--no-auto-log', action='store_true', help="Don't fill the parameter sheet of Auto (OPC UA) machines")
 
-    def handle(self, *args, host, port, topic, user, password, verbose, **kw):
+    def handle(self, *args, host, port, topic, user, password, verbose, no_auto_log, **kw):
         bridge = Bridge()
         seen = set()
-        self.stdout.write(f'{len(bridge.by_name)} MPCR machines; pinned names: {len(bridge.pinned)}')
+        auto_log = settings.FANUC_AUTO_LOG and not no_auto_log
+        self.stdout.write(f'{len(bridge.by_name)} MPCR machines; pinned names: {len(bridge.pinned)}; parameter sheet auto-fill: {"on" if auto_log else "off"}')
 
         def on_connect(client, userdata, flags, reason_code, properties=None):
             if getattr(reason_code, 'is_failure', False):
@@ -68,9 +74,18 @@ class Command(BaseCommand):
         client.connect_async(host, port, keepalive=60)
         client.loop_start()
         try:
+            warned = time.monotonic()
             while True:
-                time.sleep(60)
-                if bridge.unmatched:
+                time.sleep(20)
+                if auto_log:
+                    close_old_connections()
+                    try:
+                        for mid, slot, n in bridge.record_due():
+                            self.stdout.write(f'{mid} {slot_label(slot)} recorded from OPC UA ({n} values)')
+                    except Exception as e:  # a database hiccup must not stop the live feed
+                        self.stderr.write(f'Could not fill the parameter sheet: {e}')
+                if bridge.unmatched and time.monotonic() - warned >= 60:
+                    warned = time.monotonic()
                     self.stdout.write(self.style.WARNING(f'Not in the MPCR machine master: {", ".join(sorted(bridge.unmatched))}'))
         except KeyboardInterrupt:
             self.stdout.write('Stopped.')

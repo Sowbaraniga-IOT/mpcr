@@ -5,7 +5,7 @@ from asyncua import ua
 
 from mpcr_collector import config
 from mpcr_collector.nodes import EVENT, VARIABLES, cycle_event_fields
-from mpcr_collector.opcua_source import Session, build_cycle_filter, groups, jsonable, machine_of
+from mpcr_collector.opcua_source import Session, build_cycle_filter, child_key, groups, jsonable, machine_of
 
 
 class ConfigTests(unittest.TestCase):
@@ -66,6 +66,22 @@ class SessionTests(unittest.TestCase):
     def test_values_become_json(self):
         self.assertEqual(jsonable(ua.LocalizedText('AUTOMATIC')), 'AUTOMATIC')
         self.assertEqual(machine_of(ua.NodeId('IMM_FANUC_ROBOSHOT0005.MachineStatus.MachineMode', 6)), 'IMM_FANUC_ROBOSHOT0005')
+
+    def test_structures_become_objects(self):
+        from dataclasses import dataclass
+
+        @dataclass
+        class Step:
+            IsPresent: bool
+            Velocity: float
+
+        self.assertEqual(jsonable([Step(True, 60.0), Step(False, 0.0)]), [{'IsPresent': True, 'Velocity': 60.0}, {'IsPresent': False, 'Velocity': 0.0}])
+
+    def test_browsed_nodes_are_keyed_by_their_path(self):
+        m = 'IMM_FANUC_ROBOSHOT0005'
+        nid = ua.NodeId(f'{m}.FANUCMoldingParameters.InjectionParameters.Step.Step_1.Velocity', 6)
+        self.assertEqual(child_key(m, nid, 'x', 'Velocity'), 'FANUCMoldingParameters.InjectionParameters.Step.Step_1.Velocity')
+        self.assertEqual(child_key(m, ua.NodeId(4711, 6), 'FANUCMoldingParameters.InjectionParameters.Step', 'Step_1'), 'FANUCMoldingParameters.InjectionParameters.Step.Step_1')
 
 
 if __name__ == '__main__':

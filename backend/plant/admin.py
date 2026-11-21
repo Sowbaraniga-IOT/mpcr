@@ -53,3 +53,17 @@ class AuditAdmin(admin.ModelAdmin):
 
 for model in [models.SessionToken, models.Role, models.Part, models.Mold, models.Shift, models.Setting, models.Notification, models.MachineImage]:
     admin.site.register(model)
+
+
+@admin.register(models.ShiftMaster)
+class ShiftMasterAdmin(admin.ModelAdmin):
+    """Shift timings. A change here is what the reading schedule uses straight away."""
+
+    list_display = ['Shift_Code', 'Unit_code', 'start_tm', 'end_tm', 'time_diff']
+    list_filter = ['Unit_code']
+
+    def save_model(self, request, obj, form, change):
+        from .services.shift_master import time_diff, to_minute
+
+        obj.time_diff = time_diff(to_minute(obj.start_tm), to_minute(obj.end_tm))
+        super().save_model(request, obj, form, change)
