@@ -350,7 +350,8 @@ async def probe(cfg, machine_nodes, event_wait=60):
         deadline = time.monotonic() + event_wait
         while time.monotonic() < deadline and not all(s.state[m]['data'] for m in live):
             await asyncio.sleep(1)
-        width = max(len(k) for k, _ in s.event_fields) - len(EVENT) - 1
+        short = lambda k: k.removeprefix(f'{EVENT}.')  # noqa: E731 - short keys such as RCV_Standard stay whole
+        width = max(len(short(k)) for k, _ in s.event_fields)
         for machine in live:
             data = s.state[machine]['data']
             print(f'\n=== {machine} - {EVENT} ===')
@@ -358,4 +359,4 @@ async def probe(cfg, machine_nodes, event_wait=60):
                 print(f'  (no shot within {event_wait} s)')
                 continue
             for key, _ in s.event_fields:
-                print(f'  {key[len(EVENT) + 1:]:<{width}}  {data.get(key, "(not in event)")}')
+                print(f'  {short(key):<{width}}  {data.get(key, "(not in event)")}')

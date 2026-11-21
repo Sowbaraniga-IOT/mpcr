@@ -175,5 +175,7 @@ FANUC_MQTT_USER = env('FANUC_MQTT_USER', '')
 FANUC_MQTT_PASSWORD = env('FANUC_MQTT_PASSWORD', '')
 # Collector machine names that don't match an MPCR id apart from punctuation: "J1030=J10-30,…"
 FANUC_MACHINE_MAP = env('FANUC_MACHINE_MAP', '')
+# Unit the gateway sends durations in: s (plant FANUC gateway) or ms (OPC UA Duration as in the spec)
+FANUC_DURATION_UNIT = env('FANUC_DURATION_UNIT', 's').lower()
 # Fill the parameter sheet of "Auto (OPC UA)" machines at each reading time from the collector's values
 FANUC_AUTO_LOG = env('FANUC_AUTO_LOG', '1').lower() not in ('0', 'false', 'no', 'off', '')

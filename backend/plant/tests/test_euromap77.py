@@ -1,5 +1,5 @@
 """EUROMAP 77 (FANUC ROBOSHOT OPC UA) names: the mapping, the telemetry API and the first load."""
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, override_settings
 
 from integrations.fanuc import euromap77
 from integrations.fanuc.euromap77 import from_euromap, node_for
@@ -9,6 +9,7 @@ from ..services import params
 from .base import PlantTestCase, plant_time
 
 
+@override_settings(FANUC_DURATION_UNIT='ms')  # sample durations in milliseconds
 class MappingTests(SimpleTestCase):
     def test_durations_arrive_in_milliseconds_and_become_seconds(self):
         out = from_euromap({'CycleTime': 26150, 'InjectionTime': 668, 'DosingTime': 5200})
@@ -43,6 +44,7 @@ class MappingTests(SimpleTestCase):
         self.assertIsNone(node_for('NOT_A_CODE'))
 
 
+@override_settings(FANUC_DURATION_UNIT='ms')  # sample durations in milliseconds
 class EuromapApiTests(PlantTestCase):
     def test_telemetry_accepts_euromap_77_names(self):
         payload = {'MachineMode': 'AUTOMATIC', 'CycleTime': 24800, 'CushionVolume': 3.9, 'InjectionTime': 702, 'SpecificPressureMaximum': 118.5, 'DosingTime': 5100}
@@ -68,6 +70,7 @@ def collector_message(name='J1030', node='IMM_FANUC_ROBOSHOT0005', **data):
     return {'machine_node': node, 'machine': name, 'ts': '2026-11-11T10:00:00+00:00', 'data': data}
 
 
+@override_settings(FANUC_DURATION_UNIT='ms')  # sample durations in milliseconds
 class CollectorTests(SimpleTestCase):
     def test_node_ids_match_the_gateway(self):
         self.assertEqual(euromap77.node_id('IMM_FANUC_ROBOSHOT0005', 'Jobs/ActiveJobValues/LastCycleTime'), 'ns=6;s=IMM_FANUC_ROBOSHOT0005.Jobs.ActiveJobValues.LastCycleTime')
@@ -86,6 +89,7 @@ class CollectorTests(SimpleTestCase):
         self.assertEqual(euromap77.from_collector({'hello': 1}), (None, None, {}, {}))
 
 
+@override_settings(FANUC_DURATION_UNIT='ms')  # sample durations in milliseconds
 class BridgeTests(PlantTestCase):
     def setUp(self):
         super().setUp()
@@ -140,6 +144,7 @@ FULL_SHOT = {
 }
 
 
+@override_settings(FANUC_DURATION_UNIT='ms')  # sample durations in milliseconds
 class ReadingTests(SimpleTestCase):
     def test_collector_values_become_parameter_readings(self):
         self.assertEqual(
@@ -156,6 +161,7 @@ class ReadingTests(SimpleTestCase):
         self.assertEqual(euromap77.readings({}), {})
 
 
+@override_settings(FANUC_DURATION_UNIT='ms')  # sample durations in milliseconds
 class AutoLogTests(PlantTestCase):
     def setUp(self):
         super().setUp()
@@ -312,3 +318,18 @@ class MachineLimitLogTests(AutoLogTests):
         op = self.client_for('operator')
         op.put(f'/api/logs/J10-30/{self.today}/hours/{slot_key(self.slot)}/', {'values': {'hold1': 55}}, format='json')
         self.assertEqual(self.sheet()[1]['machineLimits'], {'cushion': {'lower': 2.7, 'upper': 4.7}})  # kept when completed
+
+
+class SecondsGatewayTests(SimpleTestCase):
+    """The plant's FANUC gateway sends durations in seconds (the default FANUC_DURATION_UNIT=s).
+    Values from a real probe of J1032, keys as MPCR's collector publishes them."""
+
+    def test_durations_in_seconds_and_current_collector_keys(self):
+        from integrations.fanuc.euromap77 import from_collector
+
+        E = 'ROBOSHOTCycleParametersEvent.InjUnitCycParams_1.'
+        data = {'machinename': 'J1032', 'cycle_time': 17.99, E + 'InjectionTime': 0.891, E + 'DosingTime': 3.31, E + 'CushionVolume': 3.58}
+        name, _, fields, _ = from_collector({'machine_node': 'IMM_FANUC_ROBOSHOT0025', 'data': data})
+        self.assertEqual(name, 'J1032')
+        self.assertEqual({k: fields[k] for k in ('cycle', 'injection', 'recovery', 'cushion')}, {'cycle': 17.99, 'injection': 0.891, 'recovery': 3.31, 'cushion': 3.58})
+

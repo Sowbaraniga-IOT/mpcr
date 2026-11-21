@@ -33,6 +33,8 @@ machine against the node's Name / EngineeringUnits before trusting automatic dev
 
 import re
 
+from django.conf import settings
+
 ROOT = 'IMM_FANUC_ROBOSHOT<MachineID>'
 CYCLE = 'ROBOSHOTCycleParametersEvent'
 INJ = f'{CYCLE}/InjUnitCycParams_1'
@@ -49,7 +51,16 @@ FIRST_BAND_ZONE = 2  # MPCR "Zone 1" is BrlTmpZnCycParams_2
 BARREL_ZONES = 11
 MOULD_ZONES = 108  # MldTmpZnCycParams_<Nr>; α-iA / AUTOSHOT have 1 … 10
 
-MS = 0.001  # OPC UA Duration (milliseconds) → seconds
+# Durations (cycle, injection, dosing time). The OPC UA Duration type is milliseconds, but the plant's
+# FANUC gateway sends seconds (probe: CycleTime 18.0, InjectionTime 0.891, DosingTime 3.31), so seconds
+# is the default. FANUC_DURATION_UNIT=ms in backend/.env for a gateway that follows the spec.
+MS = 'duration'  # a node scale: × 0.001 when FANUC_DURATION_UNIT=ms, else × 1 (read at each conversion)
+
+
+def scale_of(n):
+    if n['scale'] == MS:
+        return 0.001 if getattr(settings, 'FANUC_DURATION_UNIT', 's') == 'ms' else 1.0
+    return n['scale']
 
 SERVER_NS = 6  # the plant gateway's namespace for machine nodes
 
@@ -81,11 +92,11 @@ def _mould(nr):
 # Live values on the dashboard: Machine field → node.
 LIVE = {
     'status': node(f'{STATUS}/MachineMode', 3, kind='status', note='MachineModeEnumeration; IsPresent = false means offline'),
-    'cycle': node('Jobs/ActiveJobValues/LastCycleTime', 3, scale=MS, note='Duration (ms); the cycle event field CycleTime is also accepted', aliases=[f'{CYCLE}/CycleTime']),
+    'cycle': node('Jobs/ActiveJobValues/LastCycleTime', 3, scale=MS, note='Duration (FANUC_DURATION_UNIT); the cycle event field CycleTime is also accepted', aliases=[f'{CYCLE}/CycleTime']),
     'cushion': node(f'{INJ}/CushionVolume', 4, verify=True, note='Reported with EngineeringUnits; MPCR expects mm. Vendor alternative: InjUnitCycParams_1/MinimumCushion (ns 5)'),
-    'injection': node(f'{INJ}/InjectionTime', 4, scale=MS, note='Duration (ms)'),
+    'injection': node(f'{INJ}/InjectionTime', 4, scale=MS, note='Duration (FANUC_DURATION_UNIT)'),
     'peakPressure': node(f'{INJ}/SpecificPressureMaximum', 4, verify=True, note='Unit follows the controller setting (MPa expected)'),
-    'recovery': node(f'{INJ}/DosingTime', 4, scale=MS, note='Dosing = screw recovery; Duration (ms)'),
+    'recovery': node(f'{INJ}/DosingTime', 4, scale=MS, note='Dosing = screw recovery (RCV_Standard); Duration (FANUC_DURATION_UNIT)'),
 }
 
 # Fixed parameter-sheet codes → node. Numbered series are handled in node_for().
@@ -214,7 +225,7 @@ def from_euromap(payload):
         if isinstance(v, dict):  # AnalogItemType sent with its unit: {"value": …, "unit": …}
             v = v.get('value')
         if isinstance(v, (int, float)) and not isinstance(v, bool):
-            out[field] = round(v * n['scale'], 4)
+            out[field] = round(v * scale_of(n), 4)
     return out
 
 
@@ -244,6 +255,11 @@ COLLECTOR_KEYS = {
     'pack_steps': f'{FMP}/PackParameters/Step',
     'extruder_steps': f'{FMP}/ExtruderParameters/Step',
     'cooling_time': f'{FMP}/ExtruderParameters/CoolTime',
+    # … and the names it publishes now (collector/mpcr_collector/nodes.py VARIABLES)
+    'cycle_time': 'Jobs/ActiveJobValues/LastCycleTime',
+    'injection_hr_mode': f'{FMP}/InjectionParameters/HRMode',
+    'injection_cooling_time': f'{FMP}/ExtruderParameters/CoolTime',
+    'Part_Number': 'Jobs/ActiveJob/ProductName',
 }
 
 MOULD_SHEET_ZONES = 24  # TMP_HRTC1 … 24 on the parameter sheet
@@ -398,7 +414,7 @@ def readings(data):
             if isinstance(v, str) and v.strip():
                 out[d['key']] = v.strip()
         elif isinstance(v, (int, float)) and not isinstance(v, bool):
-            out[d['key']] = round(v * n['scale'], 4)
+            out[d['key']] = round(v * scale_of(n), 4)
     for code, v in derived.items():
         d = params.def_of(code)
         if d:

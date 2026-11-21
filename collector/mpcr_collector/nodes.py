@@ -24,9 +24,9 @@ VARIABLES = {
     #'jobcyclecounter': 'Jobs.ActiveJobValues.JobCycleCounter',
     #'machinecyclecounter': 'Jobs.ActiveJobValues.MachineCycleCounter',
      # FANUC molding setpoints (FANUCMoldingParameters, seen on the gateway in nodes.uap)
-    'cycle_time': 'Jobs.ActiveJobValues.LastCycleTime',
+    'Cycle_Time': 'Jobs.ActiveJobValues.LastCycleTime',
     'max_injection_pressure': 'FANUCMoldingParameters.InjectionParameters.SingleMaxPressure',  # MAX INJ PRS
-    'injection_hr_mode': 'FANUCMoldingParameters.InjectionParameters.HRMode',  # HR MODE
+    'hr_mode': 'FANUCMoldingParameters.InjectionParameters.HRMode',  # HR MODE
     'max_injection_time': 'FANUCMoldingParameters.InjectionParameters.MaxInjectionTime',
     'injection_cooling_time': 'FANUCMoldingParameters.ExtruderParameters.CoolTime',  # COOLING TIME
     'injection_decompression_distance':'FANUCMoldingParameters.ExtruderParameters.Decompress.Position',
@@ -39,6 +39,11 @@ VARIABLES = {
     'injection_velocity_3':'FANUCMoldingParameters.InjectionParameters.Step_3.Velocity',
     'injection_upper_tol_set_value':'FANUCMoldingParameters.ProcessMonitor.InjectionTime.Upper',
     'injection_lower_tol_set_value':'FANUCMoldingParameters.ProcessMonitor.InjectionTime.Lower',
+    'Monitor_Peak_pressure_Maximum':'FANUCMoldingParameters.ProcessMonitor.SpecificPressureMaximum.Upper', 
+    'Monitor_Peak_pressure_Minimum':'FANUCMoldingParameters.ProcessMonitor.SpecificPressureMaximum.Lower', 
+    'RCV_Time_Maximum':'FANUCMoldingParameters.ProcessMonitor.DosingTime.Upper', 
+    'RCV_Time_Minimumm':'FANUCMoldingParameters.ProcessMonitor.DosingTime.Lower', 
+   
 
 }
 
@@ -64,6 +69,14 @@ BROWSE_ROOTS = [
     'FANUCMoldingParameters.ExtruderParameters.ScrewBack.Position',  # DECOMPRESSION position, DECOMPRESSION VELOCITY
     'FANUCMoldingParameters.ProcessMonitor.CushionStroke',  # M-CUSHION upper / lower monitor
     'FANUCMoldingParameters.ProcessMonitor.InjectionTime',  # INJCT TIME upper / lower monitor
+    'FANUCMoldingParameters.ProcessMonitor.SpecificPressureMaximum.Upper', 
+    'FANUCMoldingParameters.ProcessMonitor.SpecificPressureMaximum.Lower', 
+    'FANUCMoldingParameters.ProcessMonitor.DosingTime.Upper', 
+    'FANUCMoldingParameters.ProcessMonitor.DosingTime.Lower', 
+    
+
+    
+    
      # which zones are present / feeding
 ]
 BROWSE_SKIP = {'EURange', 'EngineeringUnits', 'InstrumentRange', 'ValuePrecision', 'EnumStrings', 'EnumValues', 'Definition','PowerUnits', 'NodeVersion'}
@@ -115,6 +128,11 @@ def cycle_event_fields(barrel_zones, mould_zones):
         (5, 'MinimumCushion'),
     ]:
         fields.append((f'{EVENT}.InjUnitCycParams_1.{name}', _INJ + [(ns, name)]))
+    # Short keys for event fields, next to the setpoint keys in VARIABLES (RCV_Time_Maximum / _Minimumm).
+    for key, (ns, name) in {
+        'RCV_Standard': (4, 'DosingTime'),  # RCV TIME actual: ROBOSHOTCycleParametersEvent.InjUnitCycParams_1.DosingTime
+    }.items():
+        fields.append((key, _INJ + [(ns, name)]))
     for n in range(1, barrel_zones + 1):
         zone = (5, f'BrlTmpZnCycParams_{n}')
         fields.append((f'{EVENT}.InjUnitCycParams_1.BrlTmpZnCycParams_{n}.Name', _INJ + [zone, (3, 'Name')]))
